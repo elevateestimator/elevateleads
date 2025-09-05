@@ -388,3 +388,36 @@ body{
   color: #001018;
   box-shadow: 0 10px 24px rgba(56,188,246,0.35);
 }
+
+
+/* ===== Mobile overflow + Authority section fixes ===== */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Prevent any child sections from causing horizontal scroll */
+.section {
+  overflow-x: hidden;
+}
+
+/* Ensure media never overflows */
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile layout for Authority cards: single column, centered */
+@media (max-width: 900px){
+  .authority-grid{
+    grid-template-columns: 1fr;
+    justify-items: center;   /* center the card within the grid */
+  }
+  .authority-card{
+    width: 100%;
+    max-width: 560px;        /* readable line-length */
+  }
+  /* Add a little extra spacing below the grid on mobile */
+  #authority .authority-grid{
+    margin-bottom: 8px;
+  }
+}
