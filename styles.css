@@ -101,10 +101,10 @@ body{
 }
 .header-inner{
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 0;
+  padding: 7px 0;
 }
 .brand{ display: flex; align-items: center; gap: 10px; color: var(--c-white); text-decoration: none; }
-.logo-img{ width: 140px; height: auto; display: block; }
+.logo-img{ width: 70px; height: auto; display: block; }
 .brand-text{ font-weight: 800; letter-spacing: 0.3px; display: none; } /* we show only the logo image */
 
 .nav-toggle{
@@ -112,10 +112,10 @@ body{
   background: var(--c-card-strong);
   color: var(--c-white);
   border: 1px solid rgba(255,255,255,0.18);
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
 }
-.menu{ display: flex; gap: 18px; align-items: center; list-style: none; margin:0; padding:0; }
+.menu{ display: flex; gap: 12px; align-items: center; list-style: none; margin:0; padding:0; }
 .menu a{ color: var(--c-white); text-decoration: none; font-weight: 600; opacity: 0.9; }
 .menu a:hover{ opacity: 1; }
 
@@ -132,6 +132,13 @@ body{
     display: none;
   }
   .menu.open{ display: flex; }
+
+/* Compact header button */
+.site-header .btn {
+  padding: 8px 12px;
+  font-size: 0.95rem;
+}
+
 }
 
 /* Promo Bar */
