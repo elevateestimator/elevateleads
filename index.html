@@ -312,6 +312,68 @@
     <a href="#book" class="btn btn-primary">Book a 15‑Minute Call</a>
   </div>
 
+  <!-- Apply (Authority Application Form) -->
+  <section id="apply" class="section section-contrast">
+    <div class="container">
+      <header class="section-head">
+        <h2>Apply to Work With Elevate Leads</h2>
+        <p>We partner with companies committed to dominating their market. Answer a few quick questions.</p>
+      </header>
+
+      <form id="apply-form" class="apply-form" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="committed">Are you committed to investing in the growth and presence of your company?</label>
+            <select id="committed" name="committed" required class="input select">
+              <option value="" selected disabled>Select an option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="avg_job_size">What’s your average job size?</label>
+            <input id="avg_job_size" name="avg_job_size" type="text" inputmode="numeric" placeholder="$33,000+" class="input" />
+          </div>
+
+          <div class="form-field">
+            <label for="jobs_per_month">How many jobs are you doing per month?</label>
+            <input id="jobs_per_month" name="jobs_per_month" type="text" inputmode="numeric" placeholder="e.g., 3–5, 10+" class="input" />
+          </div>
+
+          <div class="form-field">
+            <label for="company">Company Name</label>
+            <input id="company" name="company" type="text" required placeholder="Your company" class="input" />
+          </div>
+
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required placeholder="you@company.com" class="input" />
+          </div>
+
+          <div class="form-field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" required placeholder="(555) 123-4567" class="input" />
+          </div>
+
+          <!-- honeypot -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="website">Leave this field empty</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" class="hp" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg" id="apply-submit">Check My Eligibility</button>
+          <span id="apply-status" class="form-status" role="status" aria-live="polite"></span>
+        </div>
+
+        <p class="form-note">By submitting, you agree we may contact you regarding your application.</p>
+      </form>
+    </div>
+  </section>
+
+
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="foot-brand">
