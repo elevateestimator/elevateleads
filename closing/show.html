@@ -37,27 +37,97 @@
     <h1 id="cl-title" class="sr-only">Elevate Leads — Closing Presentation</h1>
     <div id="cl-aria" class="sr-only" aria-live="polite"></div>
 
-    <!-- Floating CTA -->
-    <a class="cl-fab" href="https://calendly.com/jacob-elevateestimator/30min" target="_blank" rel="noopener"
-       aria-label="Book Implementation">Book Implementation</a>
-
     <!-- Slides -->
     <section class="cl-deck" aria-roledescription="carousel" aria-label="Closing slides" data-total="12">
-      <!-- 1. Pattern-Break Hook -->
-      <article class="cl-slide is-active" data-idx="1" data-notes="Pattern break. Then: ‘If the math works, how fast do we scale?’">
+      <!-- 1. WOW HERO -->
+      <article class="cl-slide is-active cl-slide--hero" data-idx="1" data-notes="Pause after the reveal. Ask: ‘If the math works, how fast do we scale?’">
+        <!-- spotlight follows cursor -->
+        <div class="hero-spotlight" aria-hidden="true"></div>
+
         <header class="cl-head">
-          <h2 data-parallax>Own Your Market. Look Better Than the $15M Players.</h2>
-          <p class="cl-kicker" data-parallax="0.5">3–5 New Roof Installs Every Month — or more if you can handle it.</p>
+          <h2 class="hero-head" data-parallax>
+            <span class="hero-topline">Own Your Market.</span>
+            <span class="hero-switch">
+              <b class="is-on">Best Leads</b>
+              <b>Premium Brand</b>
+              <b>Exclusive Territory</b>
+              <b>Jaw‑Dropping Content</b>
+            </span>
+          </h2>
+          <p class="cl-kicker" data-parallax="0.5">3–5 New Roof Installs Every Month — <em>or more if you can handle it.</em></p>
           <ul class="cl-metrics" data-animate="chips">
-            <li>Best leads in your area</li>
+            <li>Look better than the $15M players</li>
             <li>Exclusive territory (only 3 per region)</li>
-            <li>Live in 7 days</li>
-            <li>Leads guaranteed</li>
+            <li>Go live in 7 days</li>
+            <li>Qualified leads guaranteed</li>
           </ul>
         </header>
+
+        <div class="cl-hero">
+          <!-- Left: animated counters + marquee -->
+          <div class="cl-hero__left" data-animate="stagger">
+            <div class="counter-row">
+              <div class="counter-tile">
+                <span>Leads / mo</span>
+                <strong class="js-count" data-to="45">0</strong>
+              </div>
+              <div class="counter-tile">
+                <span>Installs / mo</span>
+                <strong class="js-count" data-to="5">0</strong>
+              </div>
+              <div class="counter-tile">
+                <span>CPL as low as</span>
+                <strong class="js-count" data-to="33" data-prefix="$">0</strong>
+                <small>Metal roofing on Meta</small>
+              </div>
+            </div>
+
+            <div class="hero-marquee" aria-hidden="true">
+              <div class="hero-marquee__track">
+                <span>Omnipresence</span>
+                <span>Drone Flyovers</span>
+                <span>Search + LSA</span>
+                <span>Maps + Reviews</span>
+                <span>Retargeting Everywhere</span>
+                <span>7‑Day Launch</span>
+                <span>Exclusive Territory</span>
+                <span>Qualified Leads Guaranteed</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: animated “ad stack” mockups -->
+          <div class="cl-hero__right" data-animate="stack">
+            <figure class="ad-card ad--search" aria-label="Google Search Ad mock">
+              <div class="chrome"><i></i><i></i><i></i></div>
+              <div class="bar"></div>
+              <div class="line title"></div>
+              <div class="line url"></div>
+              <div class="line"></div>
+              <div class="line short"></div>
+            </figure>
+
+            <figure class="ad-card ad--meta" aria-label="Meta Carousel mock">
+              <div class="chrome"><i></i><i></i><i></i></div>
+              <div class="carousel">
+                <div class="card"></div><div class="card"></div><div class="card"></div>
+              </div>
+              <div class="cta"></div>
+            </figure>
+
+            <figure class="ad-card ad--lp" aria-label="Landing Page Above‑the‑Fold mock">
+              <div class="chrome"><i></i><i></i><i></i></div>
+              <div class="lp-hero"></div>
+              <div class="lp-lines">
+                <div class="l"></div><div class="l"></div><div class="l short"></div>
+              </div>
+              <div class="lp-cta"></div>
+            </figure>
+          </div>
+        </div>
       </article>
 
-      <!-- 2. Visual Advantage (Desire) -->
+      <!-- 2. Visual Advantage -->
       <article class="cl-slide" data-idx="2" data-notes="Status play: ‘You won’t look local… you’ll look legendary.’">
         <header class="cl-head">
           <h2>Unfair Visual Advantage</h2>
@@ -94,7 +164,7 @@
         </ul>
       </article>
 
-      <!-- 4. The Ad Engine (Machine) -->
+      <!-- 4. The Ad Engine -->
       <article class="cl-slide" data-idx="4" data-notes="This is the machine. Simple and obvious.">
         <header class="cl-head">
           <h2>The Ad Engine</h2>
@@ -108,8 +178,8 @@
         </div>
       </article>
 
-      <!-- 5. Lead Quality (Not Junk) -->
-      <article class="cl-slide" data-idx="5" data-notes="Kill the ‘we tried ads’ story. You control quality + speed.">
+      <!-- 5. Lead Quality -->
+      <article class="cl-slide" data-idx="5" data-notes="Kill ‘we tried ads’. You control quality + speed.">
         <header class="cl-head"><h2>Leads You Actually Want</h2><p class="cl-kicker">No shared lists. No spam. Booked appointments.</p></header>
         <ul class="cl-bullets" data-animate="stagger">
           <li>High‑intent keywords only + deep negatives</li>
@@ -130,28 +200,52 @@
         </ul>
       </article>
 
-      <!-- 7. ROI (live) -->
-      <article class="cl-slide" data-idx="7" data-notes="Make the math inevitable, then ask about capacity.">
-        <header class="cl-head"><h2>ROI Calculator</h2><p class="cl-kicker">Adjust inputs — see CPL, CPA, Revenue, ROAS live</p></header>
-        <form class="cl-calc" onsubmit="return false;">
-          <div class="cl-calc__grid">
-            <label>Monthly Ad Spend ($)<input class="js-spend" type="number" min="0" step="100" value="3000" inputmode="decimal" /></label>
-            <label>CPC ($)<input class="js-cpc" type="number" min="0.1" step="0.1" value="15" inputmode="decimal" /></label>
-            <label>Click→Lead CVR (%)<input class="js-cvr" type="number" min="0" max="100" step="1" value="12" inputmode="decimal" /></label>
-            <label>Lead→Sale Close (%)<input class="js-close" type="number" min="0" max="100" step="1" value="30" inputmode="decimal" /></label>
-            <label>Avg Job Value ($)<input class="js-aov" type="number" min="0" step="500" value="33000" inputmode="decimal" /></label>
+      <!-- 7. ROI (live) — redesigned earlier -->
+      <article class="cl-slide" data-idx="7" data-notes="Use the scenario chips. When ROAS flips green, ask: ‘How many crews can you field?’">
+        <header class="cl-head">
+          <h2>ROI That Feels Inevitable</h2>
+          <p class="cl-kicker">Tune assumptions → watch installs and revenue jump</p>
+        </header>
+
+        <section class="cl-roi">
+          <div class="cl-roi__summary" data-animate="stagger">
+            <div class="tile big"><span>Leads / mo</span><strong class="js-leads">—</strong></div>
+            <div class="tile"><span>Installs / mo</span><strong class="js-sales">—</strong></div>
+            <div class="tile"><span>Revenue / mo</span><strong class="js-rev">$0</strong></div>
+            <div class="tile"><span>ROAS</span><strong class="js-roas">0.00x</strong></div>
           </div>
-          <div class="cl-calc__out">
-            <div><span>CPL</span><strong class="js-cpl">$0</strong></div>
-            <div><span>CPA</span><strong class="js-cpa">$0</strong></div>
-            <div><span>Est. Revenue</span><strong class="js-rev">$0</strong></div>
-            <div><span>ROAS</span><strong class="js-roas">0x</strong></div>
-            <div class="js-breakeven cl-pill">Breakeven check</div>
+
+          <div class="cl-scenarios" aria-label="Quick scenarios">
+            <button type="button" data-scenario="balanced">Balanced</button>
+            <button type="button" data-scenario="meta33">Meta CPL ≈ $33</button>
+            <button type="button" data-scenario="search">Search‑Intent</button>
+            <button type="button" data-scenario="highclose">High‑Close Crew</button>
           </div>
-        </form>
+
+          <form class="cl-calc" onsubmit="return false;">
+            <div class="cl-calc__grid">
+              <label>Monthly Ad Spend ($)<input class="js-spend" type="number" min="0" step="100" value="3000" inputmode="decimal" /></label>
+              <label>CPC ($)<input class="js-cpc" type="number" min="0.01" step="0.01" value="1.65" inputmode="decimal" /></label>
+              <label>Click→Lead CVR (%)<input class="js-cvr" type="number" min="0" max="100" step="0.5" value="5" inputmode="decimal" /></label>
+              <label>Lead→Sale Close (%)<input class="js-close" type="number" min="0" max="100" step="1" value="20" inputmode="decimal" /></label>
+              <label>Avg Job Value ($)<input class="js-aov" type="number" min="0" step="500" value="33000" inputmode="decimal" /></label>
+            </div>
+          </form>
+
+          <div class="cl-roi__kpis" data-animate="stagger">
+            <div class="tile"><span>CPL</span><strong class="js-cpl">$0</strong></div>
+            <div class="tile"><span>CPA</span><strong class="js-cpa">$0</strong></div>
+            <div class="gauge">
+              <div class="gauge__labels"><span>0x</span><span>1x breakeven</span><span>3x+</span></div>
+              <div class="gauge__track"><div class="gauge__fill js-gfill" style="width:0%"></div></div>
+              <div class="pill js-breakeven">Below breakeven</div>
+              <small class="note">We’ve driven metal roofing CPL as low as <strong>$33</strong> on Meta — try the scenario chip.</small>
+            </div>
+          </div>
+        </section>
       </article>
 
-      <!-- 8. What Homeowners See (Journey) -->
+      <!-- 8. What Homeowners See -->
       <article class="cl-slide" data-idx="8" data-notes="Walk them through the experience as a homeowner.">
         <header class="cl-head"><h2>What Your Market Sees</h2><p class="cl-kicker">Omnipresence that makes choosing you obvious.</p></header>
         <ol class="cl-plan" data-animate="stagger">
@@ -163,7 +257,7 @@
       </article>
 
       <!-- 9. Objection Killers -->
-      <article class="cl-slide" data-idx="9" data-notes="Handle without arguing. Bring it back to guarantee + exclusivity.">
+      <article class="cl-slide" data-idx="9" data-notes="Handle without arguing; return to guarantee + exclusivity.">
         <header class="cl-head"><h2>Objection Killers</h2><p class="cl-kicker">Why this wins even if you’ve “tried ads.”</p></header>
         <ul class="cl-bullets" data-animate="stagger">
           <li><strong>No shared leads</strong>. You own the pipeline.</li>
@@ -210,9 +304,8 @@
           <li>Choose territory (3 per region max)</li>
           <li>Confirm monthly ad budget</li>
           <li>Schedule shoot window</li>
-          <li>Book your implementation call</li>
+          <li>Put the date on the calendar</li>
         </ul>
-        <p><a class="cl-btn cl-btn--xl" href="https://calendly.com/jacob-elevateestimator/30min" target="_blank" rel="noopener">Book Implementation</a></p>
       </article>
     </section>
   </main>
