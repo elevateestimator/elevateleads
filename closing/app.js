@@ -34,6 +34,23 @@
   const aria = qs('#cl-aria', closing);
   const fab = qs('.c-fab-cta', closing);
 
+  /* Theme detection: if parent/body background is light, flip to light variables */
+  (function themeDetect(){
+    try{
+      const bodyBg = getComputedStyle(document.body).backgroundColor || 'rgb(255,255,255)';
+      const toRGB = (str) => {
+        const m = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d\.]+))?\)/);
+        if (!m) return [255,255,255,1];
+        return [parseInt(m[1],10), parseInt(m[2],10), parseInt(m[3],10), parseFloat(m[4] || '1')];
+      };
+      const [r,g,b,a] = toRGB(bodyBg);
+      const lum = (0.2126*(r/255) + 0.7152*(g/255) + 0.0722*(b/255));
+      const closingEl = document.getElementById('closing');
+      if (!closingEl) return;
+      if (lum > 0.7) { closingEl.classList.add('is-light'); } else { closingEl.classList.remove('is-light'); }
+    }catch(e){ /* noop */ }
+  })();
+
   // Hash & storage helpers
   const KEY = 'closingSlide';
   const NOTEKEY = 'closingNotes';

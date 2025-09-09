@@ -14,6 +14,19 @@
   background: transparent; /* inherit page background */
   font-family: inherit;
 }
+/* THEME AUTO-FIXES: readable on light or dark parent sites */
+#closing { 
+  background: var(--cl-bg);
+}
+#closing.is-light {
+  --cl-text: #0b1115;
+  --cl-muted: rgba(0,0,0,.78);
+  --cl-card: rgba(0,0,0,.06);
+  --cl-border: rgba(0,0,0,.12);
+}
+#closing.is-light .c-progress { background: rgba(0,0,0,.08); }
+#closing.is-light .c-btn { color: #001018; }
+
 
 /* Screenreader utility */
 #closing .sr-only {
