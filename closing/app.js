@@ -69,9 +69,17 @@
   const notesOn = localStorage.getItem(NOTEKEY) === '1';
   if (notesOn) closing.classList.add('is-notes');
 
+
   // Apply initial state
-  slides.forEach((s, i) => { s.hidden = (i + 1) !== idx; });
+  /* [closing] use .is-active */
+  slides.forEach((s, i) => {
+    const on = (i + 1) === idx;
+    s.classList.toggle('is-active', on);
+    s.hidden = !on;
+    s.setAttribute('aria-hidden', on ? 'false' : 'true');
+  });
   updateUI();
+
 
   // Navigation
   function goTo(next, dir = 1) {
@@ -88,12 +96,12 @@
       const xIn = dir > 0 ? '4%' : '-4%';
 
       from.animate([{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: `translateX(${xOut})` }], { duration, easing });
-      to.hidden = false;
+      to.hidden = false; to.classList.add('is-active'); to.setAttribute('aria-hidden','false');
       to.animate([{ opacity: 0, transform: `translateX(${xIn})` }, { opacity: 1, transform: 'translateX(0)' }], { duration, easing })
-        .onfinish = () => { from.hidden = true; };
+        .onfinish = () => { from.hidden = true; from.classList.remove('is-active'); from.setAttribute('aria-hidden','true'); };
     } else {
-      from.hidden = true;
-      to.hidden = false;
+      from.hidden = true; from.classList.remove('is-active'); from.setAttribute('aria-hidden','true');
+      to.hidden = false;  to.classList.add('is-active');  to.setAttribute('aria-hidden','false');
     }
 
     idx = next;

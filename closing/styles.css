@@ -202,3 +202,18 @@
   #closing .c-calc__out { grid-template-columns: 1fr 1fr; }
   #closing .c-snap { grid-template-columns: 1fr; }
 }
+
+/* === SLIDESHOW CORE (visibility + overlay) === */
+#closing .c-deck { position: relative; overflow: hidden; }
+#closing .c-slide { display: none; }
+#closing .c-slide.is-active { display: grid; }
+
+/* Ensure readable contrast on light sites */
+#closing { background: var(--cl-bg, transparent); }
+#closing.is-light {
+  --cl-text: #0b1115;
+  --cl-muted: rgba(0,0,0,.78);
+  --cl-card: rgba(0,0,0,.06);
+  --cl-border: rgba(0,0,0,.12);
+}
+#closing.is-light .c-progress { background: rgba(0,0,0,.08); }
