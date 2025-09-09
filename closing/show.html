@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elevate Leads — Closing Show</title>
+
+  <!-- Inherit your site look (don’t modify these) -->
+  <link rel="stylesheet" href="/css/main.css" />
+
+  <!-- Local, fully scoped styles -->
+  <link rel="stylesheet" href="./show.css" />
+
+  <!-- Optional global JS -->
+  <script defer src="/js/main.js"></script>
+
+  <!-- Local, fully scoped deck logic -->
+  <script defer src="./show.js"></script>
+</head>
+<body>
+  <main id="closing" role="main" tabindex="-1" aria-labelledby="cl-title">
+    <!-- Cinematic background -->
+    <div class="cl-bg" aria-hidden="true">
+      <div class="glow g1"></div>
+      <div class="glow g2"></div>
+      <div class="grid"></div>
+      <div class="grain"></div>
+    </div>
+
+    <!-- Sticky progress + counter -->
+    <div class="cl-progress" aria-hidden="true">
+      <div class="cl-progress__bar"></div>
+      <div class="cl-progress__counter" id="cl-counter" aria-live="polite" aria-atomic="true">1/12</div>
+    </div>
+
+    <!-- Screen‑reader live region -->
+    <h1 id="cl-title" class="sr-only">Elevate Leads — Closing Presentation</h1>
+    <div id="cl-aria" class="sr-only" aria-live="polite"></div>
+
+    <!-- Floating CTA -->
+    <a class="cl-fab" href="https://calendly.com/jacob-elevateestimator/30min" target="_blank" rel="noopener"
+       aria-label="Book Implementation">Book Implementation</a>
+
+    <!-- Slides -->
+    <section class="cl-deck" aria-roledescription="carousel" aria-label="Closing slides" data-total="12">
+      <!-- 1. Hook -->
+      <article class="cl-slide is-active" data-idx="1" data-notes="Ask close rate + crews. Seed: ‘If the math works, how fast do we scale?’">
+        <header class="cl-head">
+          <h2 data-parallax>If we put $1 into ads and get $3 out, how fast do we scale?</h2>
+          <p class="cl-kicker" data-parallax="0.5">3–5 New Roof Installs Every Month — or more if you can handle it!</p>
+          <ul class="cl-metrics" data-animate="chips">
+            <li>Exclusive territory (only 3 per region)</li>
+            <li>Go live in 7 days</li>
+            <li>Qualified leads guaranteed</li>
+          </ul>
+        </header>
+      </article>
+
+      <!-- 2. Offer -->
+      <article class="cl-slide" data-idx="2" data-notes="Value stack → price. Don’t justify; anchor & move.">
+        <header class="cl-head">
+          <h2>The No‑Brainer Offer</h2>
+          <p class="cl-kicker">Done‑for‑you engine that keeps your calendar full</p>
+        </header>
+        <div class="cl-grid">
+          <ul class="cl-bullets" data-animate="stagger">
+            <li>Pro content shoot (drone + on‑site)</li>
+            <li>Ad build &amp; management (launch, optimize, scale)</li>
+            <li>Exclusive territory (only <strong>3 roofers per region</strong>)</li>
+            <li>Content library (yours to reuse)</li>
+            <li>Reporting + strategy (monthly ROI call)</li>
+            <li><strong>Guarantee:</strong> Qualified leads monthly — or we keep working free</li>
+          </ul>
+          <div class="cl-card cl-price" data-animate="pop">
+            <div class="cl-row"><span>Total Value</span><strong>$20,000+ / month</strong></div>
+            <div class="cl-row"><span>Your Price</span><strong>$5,000 / month</strong></div>
+            <div class="cl-row"><span>Avg Install</span><strong>$33,000+</strong></div>
+            <a class="cl-btn" href="https://calendly.com/jacob-elevateestimator/30min" target="_blank" rel="noopener">Book Implementation</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. Presence = Money -->
+      <article class="cl-slide" data-idx="3" data-notes="You’re selling presence that captures demand, not ‘ads’.">
+        <header class="cl-head">
+          <h2>Google Presence = Money</h2>
+          <p class="cl-kicker">Own the neighborhood. Out‑position every competitor.</p>
+        </header>
+        <div class="cl-columns" data-animate="stagger">
+          <div class="cl-card"><h3>Omnipresence</h3><p>Your brand follows homeowners across feeds/devices until they book.</p></div>
+          <div class="cl-card"><h3>Authority Content</h3><p>Jobsite clips, walk‑throughs, FAQs — you lead, they follow.</p></div>
+          <div class="cl-card"><h3>Territory Shield</h3><p>We only partner with 3 per region. When it’s locked, it’s gone.</p></div>
+        </div>
+      </article>
+
+      <!-- 4. System -->
+      <article class="cl-slide" data-idx="4" data-notes="Show the machine behind the promise.">
+        <header class="cl-head">
+          <h2>The Ad System</h2>
+          <p class="cl-kicker">Awareness → Consideration → Retargeting → Follow‑Up</p>
+        </header>
+        <div class="cl-steps" data-animate="stagger">
+          <div class="cl-step"><strong>Awareness</strong><span>Drone visuals, before/after, neighborhood geo‑targeting</span></div>
+          <div class="cl-step"><strong>Consideration</strong><span>Free Roof Inspection, Storm Damage Assessment, financing callouts</span></div>
+          <div class="cl-step"><strong>Retargeting</strong><span>Recent installs, crew intro, deadline‑driven offers</span></div>
+          <div class="cl-step"><strong>Follow‑Up</strong><span>SMS/email reminders, speed‑to‑lead prompts, scripts</span></div>
+        </div>
+      </article>
+
+      <!-- 5. Tracking -->
+      <article class="cl-slide" data-idx="5" data-notes="De‑risk: ‘You’ll see what’s working and why.’">
+        <header class="cl-head">
+          <h2>Tracking &amp; Proof</h2>
+          <p class="cl-kicker">See what you’re paying for — and what it returns</p>
+        </header>
+        <ul class="cl-bullets" data-animate="stagger">
+          <li>Monthly ROI reporting + live strategy call</li>
+          <li>Campaigns live in <strong>7 days</strong></li>
+          <li>Appointments flow to your calendar</li>
+          <li>We optimize and retarget to keep crews busy</li>
+        </ul>
+      </article>
+
+      <!-- 6. Landing Pages -->
+      <article class="cl-slide" data-idx="6" data-notes="Message‑match wins.">
+        <header class="cl-head">
+          <h2>Landing Pages That Convert</h2>
+          <p class="cl-kicker">Message‑match, speed, proof, above‑the‑fold CTA</p>
+        </header>
+        <ul class="cl-bullets" data-animate="stagger">
+          <li>Single high‑impact page — credibility + urgency</li>
+          <li>“Claim Your Territory” &amp; “Lock Your Region” calls‑to‑action</li>
+          <li>Offer stack + risk reversal up front</li>
+        </ul>
+      </article>
+
+      <!-- 7. ROI (live) -->
+      <article class="cl-slide" data-idx="7" data-notes="Make the math inevitable → move to capacity.">
+        <header class="cl-head">
+          <h2>ROI Calculator</h2>
+          <p class="cl-kicker">Adjust inputs — see CPL, CPA, Revenue, ROAS live</p>
+        </header>
+        <form class="cl-calc" onsubmit="return false;">
+          <div class="cl-calc__grid">
+            <label>Monthly Ad Spend ($)<input class="js-spend" type="number" min="0" step="100" value="3000" inputmode="decimal" /></label>
+            <label>CPC ($)<input class="js-cpc" type="number" min="0.1" step="0.1" value="15" inputmode="decimal" /></label>
+            <label>Click→Lead CVR (%)<input class="js-cvr" type="number" min="0" max="100" step="1" value="12" inputmode="decimal" /></label>
+            <label>Lead→Sale Close (%)<input class="js-close" type="number" min="0" max="100" step="1" value="30" inputmode="decimal" /></label>
+            <label>Avg Job Value ($)<input class="js-aov" type="number" min="0" step="500" value="33000" inputmode="decimal" /></label>
+          </div>
+          <div class="cl-calc__out">
+            <div><span>CPL</span><strong class="js-cpl">$0</strong></div>
+            <div><span>CPA</span><strong class="js-cpa">$0</strong></div>
+            <div><span>Est. Revenue</span><strong class="js-rev">$0</strong></div>
+            <div><span>ROAS</span><strong class="js-roas">0x</strong></div>
+            <div class="js-breakeven cl-pill">Breakeven check</div>
+          </div>
+        </form>
+      </article>
+
+      <!-- 8. Case Snaps (structure placeholder) -->
+      <article class="cl-slide" data-idx="8" data-notes="Swap with screenshots later.">
+        <header class="cl-head"><h2>Case Snaps</h2><p class="cl-kicker">Before → After</p></header>
+        <div class="cl-snap" data-animate="stagger">
+          <div class="cl-card"><h3>Before</h3><ul class="cl-bullets"><li>Door‑knocking reliance</li><li>Inconsistent inbound</li><li>No clear ROI reporting</li></ul></div>
+          <div class="cl-card"><h3>After</h3><ul class="cl-bullets"><li>Qualified leads monthly (guaranteed)</li><li>Appointments to calendar in <strong>7 days</strong></li><li>Monthly ROI reporting + strategy call</li></ul></div>
+        </div>
+      </article>
+
+      <!-- 9. Objections -->
+      <article class="cl-slide" data-idx="9" data-notes="Handle without arguing; return to guarantee + exclusivity.">
+        <header class="cl-head"><h2>Objection Killers</h2><p class="cl-kicker">Why this still wins if you’ve “tried ads”</p></header>
+        <ul class="cl-bullets" data-animate="stagger">
+          <li><strong>No shared leads</strong>. You own your pipeline.</li>
+          <li><strong>Exclusive territories</strong> (only 3 per region) — lock it before it’s gone.</li>
+          <li><strong>Guarantee</strong>: qualified leads every month — or we keep working free.</li>
+          <li><strong>Speed</strong>: go live in <strong>7 days</strong>.</li>
+        </ul>
+      </article>
+
+      <!-- 10. Timeline -->
+      <article class="cl-slide" data-idx="10" data-notes="Get micro‑commitments.">
+        <header class="cl-head"><h2>Plan &amp; Timeline</h2><p class="cl-kicker">Simple. Fast. Turnkey.</p></header>
+        <ol class="cl-plan" data-animate="stagger">
+          <li><strong>Week 0:</strong> Onboarding (service area, offer, calendars)</li>
+          <li><strong>Week 1:</strong> Pro content shoot (drone + on‑site)</li>
+          <li><strong>Week 1:</strong> Launch omnipresence ads + retargeting</li>
+          <li><strong>Week 2+:</strong> Appointments flow; we optimize &amp; scale</li>
+          <li><strong>Monthly:</strong> ROI reporting + strategy call</li>
+        </ol>
+      </article>
+
+      <!-- 11. Packages -->
+      <article class="cl-slide" data-idx="11" data-notes="Restack value, then price — pause.">
+        <header class="cl-head"><h2>Packages &amp; Guarantees</h2><p class="cl-kicker">Don’t pay twice — get it right the first time</p></header>
+        <div class="cl-grid">
+          <ul class="cl-bullets" data-animate="stagger">
+            <li>Pro content + Ad build/management</li>
+            <li>Exclusive territory (3 per region)</li>
+            <li>Content library + monthly strategy</li>
+            <li>Qualified leads guaranteed</li>
+          </ul>
+          <div class="cl-card cl-price" data-animate="pop">
+            <div class="cl-row"><span>Total Value</span><strong>$20,000+ / month</strong></div>
+            <div class="cl-row"><span>Your Price</span><strong>$5,000 / month</strong></div>
+            <div class="cl-row"><span>Avg Install</span><strong>$33,000+</strong></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 12. Next Steps -->
+      <article class="cl-slide" data-idx="12" data-notes="Confetti. Ask for the booking; be quiet.">
+        <header class="cl-head"><h2>Next Steps</h2><p class="cl-kicker">Lock your region — then let’s fill your calendar</p></header>
+        <ul class="cl-check" data-animate="stagger">
+          <li>Choose territory (3 per region max)</li>
+          <li>Confirm monthly ad budget</li>
+          <li>Schedule shoot window</li>
+          <li>Book your implementation call</li>
+        </ul>
+        <p><a class="cl-btn cl-btn--xl" href="https://calendly.com/jacob-elevateestimator/30min" target="_blank" rel="noopener">Book Implementation</a></p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

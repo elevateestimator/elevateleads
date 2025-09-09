@@ -1,0 +1,158 @@
+/* Fully scoped to #closing — no global bleed.
+   Prefers site variables; falls back to dark + electric blue. */
+
+#closing {
+  --cl-accent: var(--accent, #1EA7FD);
+  --cl-accent-2: var(--accent-2, #5CDDFF);
+  --cl-bg: var(--bg, #0b1115);
+  --cl-text: var(--text, #ffffff);
+  --cl-muted: rgba(255,255,255,.86);
+  --cl-card: rgba(255,255,255,.06);
+  --cl-border: rgba(255,255,255,.14);
+  --cl-radius: 16px;
+  --cl-shadow: 0 14px 42px rgba(0,0,0,.35);
+  color: var(--cl-text);
+  font-family: inherit;
+  min-height: 100dvh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Auto light‑mode when host page is bright (JS toggles .is-light) */
+#closing.is-light { --cl-text:#0b1115; --cl-muted:rgba(0,0,0,.78); --cl-card:rgba(0,0,0,.06); --cl-border:rgba(0,0,0,.14); }
+
+/* Background: glows + subtle grid + grain */
+#closing .cl-bg { position: fixed; inset: 0; z-index: -1; overflow: hidden;
+  background: radial-gradient(1200px 800px at 10% -20%, rgba(30,167,253,.35), transparent 70%),
+              radial-gradient(1000px 700px at 110% 120%, rgba(92,221,255,.18), transparent 70%),
+              linear-gradient(180deg, #0b1115 0%, #0d1218 60%, #0b1115 100%);
+}
+#closing .cl-bg .glow { position:absolute; width:44vmax; height:44vmax; border-radius:50%;
+  filter: blur(40px); opacity:.35; mix-blend-mode:screen; pointer-events:none;
+  background: radial-gradient(circle at 30% 30%, var(--cl-accent-2), transparent 60%);
+  animation: glow 16s linear infinite;
+}
+#closing .cl-bg .g1 { left:-18vmax; top:-12vmax; animation-delay:0s; }
+#closing .cl-bg .g2 { right:-16vmax; bottom:-10vmax; animation-delay:6s; }
+#closing .cl-bg .grid { position:absolute; inset:-20%;
+  background-image: linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 28px 28px; mask-image: radial-gradient(60% 60% at 30% 40%, #000 50%, transparent 100%);
+}
+#closing .cl-bg .grain { position:absolute; inset:-20%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 40 40'%3E%3Cpath fill='rgba(255,255,255,.05)' d='M0 0h40v40H0z'/%3E%3Ccircle cx='20' cy='20' r='1' fill='rgba(0,0,0,.26)'/%3E%3C/svg%3E");
+  opacity:.35; mix-blend-mode:overlay; animation: grain 2s steps(2) infinite;
+}
+@keyframes glow { to { transform: rotate(360deg) translate(8px,-6px); } }
+@keyframes grain { to { transform: translate3d(-3%,2%,0); } }
+
+/* Screenreader helper */
+#closing .sr-only{ position:absolute!important; height:1px;width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+
+/* Progress */
+#closing .cl-progress{ position:sticky; top:0; z-index:30; height:10px; background:rgba(0,0,0,.32); backdrop-filter: blur(8px); }
+#closing.is-light .cl-progress{ background:rgba(0,0,0,.08); }
+#closing .cl-progress__bar{ height:100%; width:0%; background:linear-gradient(90deg,var(--cl-accent),var(--cl-accent-2)); transition:width .25s ease; }
+#closing .cl-progress__counter{ position:absolute; top:12px; right:12px; font:800 12px/1 system-ui; padding:3px 8px; border-radius:999px; background:rgba(0,0,0,.38); }
+#closing.is-light .cl-progress__counter{ background:rgba(0,0,0,.1); }
+
+/* Deck: true slideshow */
+#closing .cl-deck{ position:relative; min-height:100dvh; }
+#closing .cl-slide{
+  position:absolute; inset:0; display:grid; grid-template-rows:auto 1fr auto;
+  gap: clamp(12px,2vw,18px); padding: clamp(16px,6vw,60px);
+  opacity:0; visibility:hidden; pointer-events:none;
+}
+#closing .cl-slide.is-active{ opacity:1; visibility:visible; pointer-events:auto; }
+
+#closing .cl-head h2{ margin:0 0 8px; font-weight:900; line-height:1.04; font-size: clamp(34px, 6.4vw, 74px); text-wrap:balance; letter-spacing:-.4px; }
+#closing .cl-kicker{ margin:0; font-weight:800; letter-spacing:.2px;
+  background: linear-gradient(135deg,var(--cl-accent),var(--cl-accent-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* “Make me want it” chips */
+#closing .cl-metrics{ list-style:none; padding:0; margin:14px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
+#closing .cl-metrics li{ font-weight:900; padding:8px 12px; border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
+  border:1px solid var(--cl-border); box-shadow:0 10px 24px rgba(0,0,0,.25);
+}
+
+/* Cards, grids, steps */
+#closing .cl-bullets{ list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+#closing .cl-bullets li{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:14px; padding:14px 16px; font-weight:800; box-shadow:var(--cl-shadow); }
+#closing .cl-grid{ display:grid; grid-template-columns:2fr 1fr; gap:16px; align-items:start; }
+#closing .cl-card{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:14px; padding:16px; box-shadow:var(--cl-shadow); }
+#closing .cl-price .cl-row{ display:grid; grid-template-columns:1fr auto; padding:8px 0; border-bottom:1px dashed var(--cl-border); }
+#closing .cl-price .cl-row:last-child{ border-bottom:0; }
+#closing .cl-columns{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+#closing .cl-steps{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+#closing .cl-step{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:14px; font-weight:900; }
+#closing .cl-step span{ display:block; margin-top:6px; font-weight:700; opacity:.9; }
+
+/* Plan */
+#closing .cl-plan{ list-style:none; padding:0; display:grid; gap:10px; }
+#closing .cl-plan li{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:12px 14px; }
+
+/* Checklist */
+#closing .cl-check{ list-style:none; padding:0; display:grid; gap:10px; }
+#closing .cl-check li::before{ content:"✓"; color:var(--cl-accent); font-weight:900; margin-right:8px; }
+
+/* ROI */
+#closing .cl-calc{ display:grid; gap:14px; }
+#closing .cl-calc__grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+#closing .cl-calc__grid label{ display:grid; gap:6px; font-weight:900; }
+#closing .cl-calc__grid input{ border-radius:10px; border:1px solid var(--cl-border); background:rgba(255,255,255,.06); color:var(--cl-text); padding:10px 12px; }
+#closing.is-light .cl-calc__grid input{ background:rgba(0,0,0,.05); }
+#closing .cl-calc__out{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+#closing .cl-calc__out > div{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:12px; }
+#closing .cl-pill{ align-self:center; justify-self:center; padding:6px 12px; border-radius:999px; font-weight:900; }
+
+/* Notes toggle */
+#closing .cl-notes{ display:none; opacity:.9; }
+#closing.is-notes .cl-notes{ display:block; }
+
+/* Buttons */
+#closing .cl-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; font-weight:900;
+  color:#001018; text-decoration:none; border-radius:12px; border:1px solid transparent;
+  background: linear-gradient(135deg,var(--cl-accent),var(--cl-accent-2));
+  box-shadow:0 10px 24px rgba(0,0,0,.25); transition:transform .08s ease;
+}
+#closing .cl-btn:hover{ transform:translateY(-1px); }
+#closing .cl-btn:focus-visible{ outline:3px solid var(--cl-accent); outline-offset:4px; }
+#closing .cl-btn--xl{ padding:14px 24px; font-size:1.1rem; }
+
+/* Floating CTA (magnetic) */
+#closing .cl-fab{ position:fixed; right:18px; bottom:18px; z-index:40; padding:12px 16px; border-radius:999px; font-weight:900;
+  background:linear-gradient(135deg,var(--cl-accent),var(--cl-accent-2)); color:#001018; text-decoration:none; border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 12px 26px rgba(0,0,0,.35);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  #closing .cl-bg .glow, #closing .cl-bg .grain{ animation:none!important; }
+}
+
+/* Print: slide per page */
+@media print{
+  #closing{ color:#000; background:#fff!important; }
+  #closing .cl-bg, #closing .cl-fab, #closing .cl-progress{ display:none!important; }
+  #closing .cl-slide{ position:static; opacity:1!important; visibility:visible!important; page-break-after:always; break-after:page; }
+}
+
+/* Responsive */
+@media (max-width:1080px){
+  #closing .cl-grid{ grid-template-columns:1fr; }
+  #closing .cl-columns{ grid-template-columns:1fr; }
+  #closing .cl-steps{ grid-template-columns:1fr 1fr; }
+  #closing .cl-calc__grid, #closing .cl-calc__out{ grid-template-columns:1fr 1fr; }
+}
+
+/* Entrance effects — triggered via JS */
+#closing [data-animate="pop"]{ transform:scale(.98); opacity:0; }
+#closing [data-animate="stagger"] .cl-bullets > li,
+#closing [data-animate="stagger"] .cl-step,
+#closing [data-animate="stagger"] .cl-plan li,
+#closing [data-animate="stagger"] .cl-check li,
+#closing [data-animate="stagger"] .cl-columns .cl-card { transform:translateY(10px); opacity:0; }
+#closing [data-animate="chips"] > * { transform:translateY(8px) scale(.98); opacity:0; }
