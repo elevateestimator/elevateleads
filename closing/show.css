@@ -1,8 +1,8 @@
 /* Fully scoped to #closing — no global bleed.
-   Prefers site variables; falls back to dark + electric blue. */
+   Prefers your site variables; falls back to dark + electric-blue accent. */
 
 #closing {
-  --cl-accent: var(--accent, #1EA7FD);
+  --cl-accent: var(--accent, #38BCF6);
   --cl-accent-2: var(--accent-2, #5CDDFF);
   --cl-bg: var(--bg, #0b1115);
   --cl-text: var(--text, #ffffff);
@@ -23,8 +23,8 @@
 
 /* Background: glows + subtle grid + grain */
 #closing .cl-bg { position: fixed; inset: 0; z-index: -1; overflow: hidden;
-  background: radial-gradient(1200px 800px at 10% -20%, rgba(30,167,253,.35), transparent 70%),
-              radial-gradient(1000px 700px at 110% 120%, rgba(92,221,255,.18), transparent 70%),
+  background: radial-gradient(1200px 800px at 10% -20%, rgba(56,188,246,.35), transparent 70%),
+              radial-gradient(1000px 700px at 110% 120%, rgba(92,221,255,.22), transparent 70%),
               linear-gradient(180deg, #0b1115 0%, #0d1218 60%, #0b1115 100%);
 }
 #closing .cl-bg .glow { position:absolute; width:44vmax; height:44vmax; border-radius:50%;
@@ -65,55 +65,53 @@
 }
 #closing .cl-slide.is-active{ opacity:1; visibility:visible; pointer-events:auto; }
 
-#closing .cl-head h2{ margin:0 0 8px; font-weight:900; line-height:1.04; font-size: clamp(34px, 6.4vw, 74px); text-wrap:balance; letter-spacing:-.4px; }
+#closing .cl-head h2{ margin:0 0 8px; font-weight:900; line-height:1.04; font-size: clamp(34px, 6.2vw, 76px); text-wrap:balance; letter-spacing:-.4px; }
 #closing .cl-kicker{ margin:0; font-weight:800; letter-spacing:.2px;
   background: linear-gradient(135deg,var(--cl-accent),var(--cl-accent-2));
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 
-/* “Make me want it” chips */
-#closing .cl-metrics{ list-style:none; padding:0; margin:14px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
-#closing .cl-metrics li{ font-weight:900; padding:8px 12px; border-radius:999px;
-  background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
-  border:1px solid var(--cl-border); box-shadow:0 10px 24px rgba(0,0,0,.25);
+/* “Power chips” */
+#closing .cl-metrics{ list-style:none; padding:0; margin:16px 0 0; display:flex; flex-wrap:wrap; gap:10px; }
+#closing .cl-metrics li{ font-weight:900; padding:10px 14px; border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.08));
+  border:1px solid var(--cl-border); box-shadow:0 10px 24px rgba(0,0,0,.28);
 }
 
 /* Cards, grids, steps */
-#closing .cl-bullets{ list-style:none; padding:0; margin:0; display:grid; gap:12px; }
-#closing .cl-bullets li{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:14px; padding:14px 16px; font-weight:800; box-shadow:var(--cl-shadow); }
-#closing .cl-grid{ display:grid; grid-template-columns:2fr 1fr; gap:16px; align-items:start; }
+#closing .cl-bullets{ list-style:none; padding:0; margin:0; display:grid; gap:14px; }
+#closing .cl-bullets li{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:14px; padding:16px 18px; font-weight:800; box-shadow:var(--cl-shadow); }
+#closing .cl-grid{ display:grid; grid-template-columns:2fr 1fr; gap:18px; align-items:start; }
 #closing .cl-card{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:14px; padding:16px; box-shadow:var(--cl-shadow); }
-#closing .cl-price .cl-row{ display:grid; grid-template-columns:1fr auto; padding:8px 0; border-bottom:1px dashed var(--cl-border); }
+#closing .cl-price .cl-row{ display:grid; grid-template-columns:1fr auto; padding:10px 0; border-bottom:1px dashed var(--cl-border); }
 #closing .cl-price .cl-row:last-child{ border-bottom:0; }
-#closing .cl-columns{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-#closing .cl-steps{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-#closing .cl-step{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:14px; font-weight:900; }
-#closing .cl-step span{ display:block; margin-top:6px; font-weight:700; opacity:.9; }
+#closing .cl-columns{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+#closing .cl-steps{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+#closing .cl-step{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:16px; font-weight:900; }
+#closing .cl-step span{ display:block; margin-top:8px; font-weight:700; opacity:.9; }
 
-/* Plan */
-#closing .cl-plan{ list-style:none; padding:0; display:grid; gap:10px; }
-#closing .cl-plan li{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:12px 14px; }
-
-/* Checklist */
-#closing .cl-check{ list-style:none; padding:0; display:grid; gap:10px; }
+/* Plan / Checklist */
+#closing .cl-plan{ list-style:none; padding:0; display:grid; gap:12px; }
+#closing .cl-plan li{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:14px 16px; }
+#closing .cl-check{ list-style:none; padding:0; display:grid; gap:12px; }
 #closing .cl-check li::before{ content:"✓"; color:var(--cl-accent); font-weight:900; margin-right:8px; }
 
 /* ROI */
-#closing .cl-calc{ display:grid; gap:14px; }
-#closing .cl-calc__grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+#closing .cl-calc{ display:grid; gap:16px; }
+#closing .cl-calc__grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
 #closing .cl-calc__grid label{ display:grid; gap:6px; font-weight:900; }
-#closing .cl-calc__grid input{ border-radius:10px; border:1px solid var(--cl-border); background:rgba(255,255,255,.06); color:var(--cl-text); padding:10px 12px; }
+#closing .cl-calc__grid input{ border-radius:10px; border:1px solid var(--cl-border); background:rgba(255,255,255,.06); color:var(--cl-text); padding:12px 12px; }
 #closing.is-light .cl-calc__grid input{ background:rgba(0,0,0,.05); }
-#closing .cl-calc__out{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+#closing .cl-calc__out{ display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
 #closing .cl-calc__out > div{ background:var(--cl-card); border:1px solid var(--cl-border); border-radius:12px; padding:12px; }
-#closing .cl-pill{ align-self:center; justify-self:center; padding:6px 12px; border-radius:999px; font-weight:900; }
+#closing .cl-pill{ align-self:center; justify-self:center; padding:8px 14px; border-radius:999px; font-weight:900; }
 
-/* Notes toggle */
+/* Notes */
 #closing .cl-notes{ display:none; opacity:.9; }
 #closing.is-notes .cl-notes{ display:block; }
 
 /* Buttons */
-#closing .cl-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; font-weight:900;
+#closing .cl-btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; font-weight:900;
   color:#001018; text-decoration:none; border-radius:12px; border:1px solid transparent;
   background: linear-gradient(135deg,var(--cl-accent),var(--cl-accent-2));
   box-shadow:0 10px 24px rgba(0,0,0,.25); transition:transform .08s ease;
@@ -154,5 +152,5 @@
 #closing [data-animate="stagger"] .cl-step,
 #closing [data-animate="stagger"] .cl-plan li,
 #closing [data-animate="stagger"] .cl-check li,
-#closing [data-animate="stagger"] .cl-columns .cl-card { transform:translateY(10px); opacity:0; }
+#closing [data-animate="stagger"] .cl-columns .cl-card { transform:translateY(12px); opacity:0; }
 #closing [data-animate="chips"] > * { transform:translateY(8px) scale(.98); opacity:0; }

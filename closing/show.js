@@ -33,8 +33,8 @@
     const aria = qs('#cl-aria', root);
     const fab = qs('.cl-fab', root);
 
-    const KEY = 'closing.show.slide';
-    const NOTEKEY = 'closing.show.notes';
+    const KEY = 'closing.show.slide.v2';
+    const NOTEKEY = 'closing.show.notes.v2';
     const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
     // Initial slide from hash or storage
@@ -57,7 +57,7 @@
     function show(next, dir = +1){
       if (next === idx || next < 1 || next > total) return;
       const from = slides[idx - 1], to = slides[next - 1];
-      const duration = 360, easing = 'cubic-bezier(.2,.8,.2,1)';
+      const duration = 380, easing = 'cubic-bezier(.2,.8,.2,1)';
       const off = dir > 0 ? -6 : 6;
 
       to.classList.add('is-active');
@@ -100,7 +100,7 @@
       // chips
       qsa('[data-animate="chips"] > *', slide).forEach((el,i)=>{
         el.animate([{opacity:0, transform:'translateY(8px) scale(.98)'},{opacity:1, transform:'translateY(0) scale(1)'}],
-                   {duration:240, delay:60*i, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
+                   {duration:260, delay:60*i, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
       });
       // stagger groups
       qsa('[data-animate="stagger"]', slide).forEach(group=>{
@@ -113,14 +113,14 @@
         ];
         items.forEach((el,i)=>{
           if (!el.animate) return;
-          el.animate([{opacity:0, transform:'translateY(10px)'},{opacity:1, transform:'translateY(0)'}],
-                     {duration:260, delay:70*i, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
+          el.animate([{opacity:0, transform:'translateY(12px)'},{opacity:1, transform:'translateY(0)'}],
+                     {duration:280, delay:70*i, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
         });
       });
       // pops
       qsa('[data-animate="pop"]', slide).forEach(el=>{
         el.animate([{opacity:0, transform:'scale(.98)'},{opacity:1, transform:'scale(1)'}],
-                   {duration:260, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
+                   {duration:280, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
       });
     }
 
@@ -131,7 +131,7 @@
       else if (['arrowleft','pageup'].includes(k)) { e.preventDefault(); show(idx-1, -1); }
       else if (k === 'home'){ e.preventDefault(); show(1, -1); }
       else if (k === 'end'){ e.preventDefault(); show(total, +1); }
-      else if (k === 'n'){ e.preventDefault(); root.classList.toggle('is-notes'); localStorage.setItem('closing.show.notes', root.classList.contains('is-notes')?'1':'0'); }
+      else if (k === 'n'){ e.preventDefault(); root.classList.toggle('is-notes'); localStorage.setItem(NOTEKEY, root.classList.contains('is-notes')?'1':'0'); }
     });
     deck.addEventListener('click', (e)=>{ if (!e.target.closest('a,button,input,select,textarea,label')) show(idx+1, +1); });
     let sx=null,sy=null,ts=0;
@@ -185,7 +185,7 @@
     function confetti(){
       if (prefersReduced) return;
       const N=140, cs=[
-        getComputedStyle(root).getPropertyValue('--cl-accent').trim()||'#1EA7FD',
+        getComputedStyle(root).getPropertyValue('--cl-accent').trim()||'#38BCF6',
         getComputedStyle(root).getPropertyValue('--cl-accent-2').trim()||'#5CDDFF',
         '#ffffff'
       ];
