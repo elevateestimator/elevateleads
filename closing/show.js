@@ -1,19 +1,24 @@
 /* Slideshow engine for /closing/show.html
-   - Click / arrows / swipe navigation bound on #closing
-   - WAAPI transitions with class fallback
+   - Click / arrows / swipe navigation on #closing
+   - WAAPI transitions with safe fallback (+ watchdog)
    - Hash routing + localStorage
-   - Parallax + spotlight hero; counters start at their target (no zeros)
-   - ROI scenarios + gauge
+   - Hero counters start at target (no zeros) + parallax/spotlight
+   - ROI calculator + gauge
+   - Slide 4: Ad Engine toggles update budget split
+   - Slide 5: Intake demo (postal, roof type, age/damage, insurance, timeline) with scoring
 */
 
 (function () {
-  const onReady = (fn) => (document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', fn) : fn());
-  onReady(() => {
-    const qs  = (s, c = document) => c.querySelector(s);
-    const qsa = (s, c = document) => Array.from(c.querySelectorAll(s));
-    const root = qs('#closing'); if (!root) return;
+  const onReady = (fn) => (document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', fn)
+    : fn());
 
-    // Auto-theme: detect body background luminance (safe regex)
+  onReady(() => {
+    const $ = (s, c = document) => c.querySelector(s);
+    const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+    const root = $('#closing'); if (!root) return;
+
+    // Light/dark auto based on host background (defensive)
     try {
       const bg = getComputedStyle(document.body).backgroundColor || 'rgb(255,255,255)';
       const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -24,166 +29,201 @@
       }
     } catch(_) {}
 
-    const deck   = qs('.cl-deck', root);
-    const slides = qsa('.cl-slide', deck);
+    const deck   = $('.cl-deck', root);
+    const slides = $$('.cl-slide', deck);
     const total  = slides.length;
-    const bar    = qs('.cl-progress__bar', root);
-    const counter= qs('#cl-counter', root);
-    const aria   = qs('#cl-aria', root);
+    const bar    = $('.cl-progress__bar', root);
+    const counter= $('#cl-counter', root);
+    const aria   = $('#cl-aria', root);
 
-    const KEY='closing.show.slide.v5', NOTEKEY='closing.show.notes.v5';
+    // Bump the storage key to force a clean start
+    const KEY='closing.show.slide.v12', NOTEKEY='closing.show.notes.v9';
     const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    let animating = false;
 
     // Index from hash or storage
-    const parseHash = () => {
-      const m = (location.hash || '').match(/#\/(\d+)/);
-      return m ? Math.min(total, Math.max(1, parseInt(m[1], 10))) : null;
-    };
-    let idx = parseHash() || parseInt(localStorage.getItem(KEY) || '1', 10);
+    const fromHash = () => { const m=(location.hash||'').match(/#\/(\d+)/); return m?Math.min(total,Math.max(1,parseInt(m[1],10))):null; };
+    let idx = fromHash() || parseInt(localStorage.getItem(KEY) || '1', 10);
     if (!(idx >= 1 && idx <= total)) idx = 1;
 
-    // Notes toggle restore
-    if (localStorage.getItem(NOTEKEY) === '1') root.classList.add('is-notes');
-
-    // Apply initial state
-    slides.forEach((s, i) => s.classList.toggle('is-active', (i + 1) === idx));
+    // Ensure only one active slide
+    slides.forEach((s,i)=> s.classList.toggle('is-active', i+1===idx));
     updateUI();
-    reveal(slides[idx - 1]);
-    if (idx === 1) initHeroOnce();
+    reveal(slides[idx-1]);
+    if (idx === 1) initHero();
 
-    // NAVIGATION
-    function show(next, dir = +1){
-      if (next === idx || next < 1 || next > total) return;
-      const from = slides[idx - 1], to = slides[next - 1];
+    // Navigation core
+    function go(toIdx, dir = +1){
+      if (animating || toIdx === idx || toIdx < 1 || toIdx > total) return;
+      const from = slides[idx-1], to = slides[toIdx-1];
+      animating = true;
 
       // Prepare "to"
       to.classList.add('is-active');
-      to.style.opacity = '0'; to.style.visibility = 'visible'; to.style.pointerEvents = 'auto';
+      to.style.opacity = '0'; to.style.visibility='visible'; to.style.pointerEvents='auto';
 
       const duration = 360, easing = 'cubic-bezier(.2,.8,.2,1)';
       const off = dir > 0 ? -6 : 6;
+
+      let done = false;
+      const finish = () => {
+        if (done) return; done = true;
+        from.classList.remove('is-active'); from.style.visibility='hidden'; from.style.pointerEvents='none'; from.style.opacity='';
+        to.style.opacity='1';
+        reveal(to);
+        if (toIdx === 1) initHero();
+        idx = toIdx; updateUI();
+        animating = false;
+      };
 
       if (!prefersReduced && from.animate && to.animate) {
         from.animate(
           [{ opacity:1, transform:'translateX(0) scale(1)' },
            { opacity:0, transform:`translateX(${off}%) scale(.98)` }],
           { duration, easing }
-        ).onfinish = () => { from.classList.remove('is-active'); from.style.opacity=''; from.style.visibility='hidden'; from.style.pointerEvents='none'; };
-
-        to.animate(
+        );
+        const a = to.animate(
           [{ opacity:0, transform:`translateX(${-off}%) scale(.98)` },
            { opacity:1, transform:'translateX(0) scale(1)' }],
           { duration, easing, fill:'forwards' }
-        ).onfinish = () => { to.style.opacity='1'; reveal(to); if (next === 1) initHeroOnce(); };
+        );
+        a.onfinish = finish;
+        a.addEventListener?.('finish', finish);
+        a.finished?.then(finish).catch(()=>{});
+        setTimeout(finish, duration + 240); // watchdog
       } else {
-        // Class fallback
-        from.classList.remove('is-active'); from.style.visibility='hidden'; from.style.pointerEvents='none';
-        to.style.opacity='1'; reveal(to); if (next === 1) initHeroOnce();
+        finish();
       }
-
-      idx = next; updateUI();
     }
 
     function updateUI(){
       const pct = (idx - 1) / (total - 1) * 100;
       if (bar) bar.style.width = `${pct}%`;
       if (counter) counter.textContent = `${idx}/${total}`;
-      const title = qs(`.cl-slide:nth-child(${idx}) h2`, deck)?.textContent?.trim() || `Slide ${idx}`;
+      const title = $(`.cl-slide:nth-child(${idx}) h2`, deck)?.textContent?.trim() || `Slide ${idx}`;
       if (aria) aria.textContent = `Slide ${idx} of ${total}: ${title}`;
       const h = `#/${idx}`; if (location.hash !== h) history.replaceState(null, '', h);
       localStorage.setItem(KEY, String(idx));
     }
 
-    // Stagger / chips / stack
+    // Reveal animations
     function reveal(slide){
       if (prefersReduced) return;
       // chips
-      qsa('[data-animate="chips"] > *', slide).forEach((el,i)=>{
-        el.animate([{opacity:0, transform:'translateY(8px) scale(.98)'},{opacity:1, transform:'translateY(0) scale(1)'}],
+      $$('[data-animate="chips"] > *', slide).forEach((el,i)=>{
+        el.animate?.([{opacity:0, transform:'translateY(8px) scale(.98)'},{opacity:1, transform:'translateY(0) scale(1)'}],
                    {duration:240, delay:60*i, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
       });
-      // groups
-      qsa('[data-animate="stagger"]', slide).forEach(group=>{
+      // stagger groups
+      $$('[data-animate="stagger"]', slide).forEach(group=>{
         const items = [
-          ...qsa('.cl-bullets > li', group),
-          ...qsa('.cl-step', group),
-          ...qsa('.cl-plan li', group),
-          ...qsa('.cl-check li', group),
-          ...qsa('.cl-columns .cl-card', group),
-          ...qsa('.counter-row .counter-tile', group)
+          ...$$('.cl-bullets > li', group),
+          ...$$('.cl-step', group),
+          ...$$('.cl-plan li', group),
+          ...$$('.cl-check li', group),
+          ...$$('.cl-columns .cl-card', group),
+          ...$$('.counter-row .counter-tile', group),
+          ...$$('.features .feature', group),
+          ...$$('.cl-callout .callout-card', group),
+          ...$$('.cl-callout .mini-timeline', group),
+          ...$$('.cl-callout .map-card', group),
+          ...$$('.role-grid .role-card', group)
         ];
         items.forEach((el,i)=>{
-          if (!el.animate) return;
-          el.animate([{opacity:0, transform:'translateY(12px)'},{opacity:1, transform:'translateY(0)'}],
+          el.animate?.([{opacity:0, transform:'translateY(12px)'},{opacity:1, transform:'translateY(0)'}],
                      {duration:260, delay:70*i, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
         });
       });
-      // stack drift
-      qsa('[data-animate="stack"] .ad-card', slide).forEach((el,i)=>{
-        if (!el.animate) return;
-        const base = el.dataset.base || getComputedStyle(el).transform || 'none';
-        if (!el.dataset.base) el.dataset.base = base;
-        el.animate([{opacity:0, transform:`${base} translateY(12px) scale(.96)`},{opacity:1, transform:`${base} translateY(0) scale(1)`}],
+
+      // ad-card stack
+      $$('[data-animate="stack"] .ad-card', slide).forEach((el,i)=>{
+        const base = getComputedStyle(el).transform || 'none';
+        el.animate?.([{opacity:0, transform:`${base} translateY(12px) scale(.96)`},{opacity:1, transform:`${base} translateY(0) scale(1)`}],
                    {duration:420, delay:90*i, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'});
       });
+
+      // Slide-specific inits
+      if (slide.classList.contains('cl-slide--engine')) initEngine(slide);
+      if (slide.classList.contains('cl-slide--intake')) initIntake(slide);
+      if (slide.classList.contains('cl-slide--proof')) initProof(slide);
+      
+      if (slide.classList.contains('cl-slide--objections')) initObjections(slide);
+if (slide.classList.contains('cl-slide--team')) initTeam(slide);
     }
 
-    // Global key / click / swipe — bind on #closing to avoid dead zones
+    // Keys
     document.addEventListener('keydown', (e)=>{
+      const tag = (e.target && (e.target.tagName || '')).toLowerCase();
+      const interactive = /input|textarea|select|button/.test(tag) || e.target?.isContentEditable;
+      if (interactive) return;
+
       const k = e.key.toLowerCase();
-      if (['arrowright','pagedown',' '].includes(k)) { e.preventDefault(); show(idx+1, +1); }
-      else if (['arrowleft','pageup'].includes(k)) { e.preventDefault(); show(idx-1, -1); }
-      else if (k === 'home'){ e.preventDefault(); show(1, -1); }
-      else if (k === 'end'){ e.preventDefault(); show(total, +1); }
+      if (['arrowright','pagedown',' '].includes(k)) { e.preventDefault(); go(idx+1, +1); }
+      else if (['arrowleft','pageup'].includes(k)) { e.preventDefault(); go(idx-1, -1); }
+      else if (k === 'home'){ e.preventDefault(); go(1, -1); }
+      else if (k === 'end'){ e.preventDefault(); go(total, +1); }
       else if (k === 'n'){ e.preventDefault(); root.classList.toggle('is-notes'); localStorage.setItem(NOTEKEY, root.classList.contains('is-notes')?'1':'0'); }
-    });
+    }, { capture: true });
 
-    // Click-to-advance anywhere on the presentation (except interactive controls)
+    // Click-to-advance anywhere (except interactive)
     root.addEventListener('click', (e)=>{
-      if (e.target.closest('a,button,input,select,textarea,label')) return;
-      show(idx+1, +1);
+      if (e.target.closest('a,button,input,select,textarea,label,[role="button"]')) return;
+      go(idx+1, +1);
     });
 
-    // Swipe nav
-    let sx=null, sy=null, ts=0;
-    root.addEventListener('pointerdown',(e)=>{ sx=e.clientX; sy=e.clientY; ts=performance.now(); });
+    // Fixed Prev/Next controls
+    root.addEventListener('click',(e)=>{
+      const btn = e.target.closest('[data-nav]'); if (!btn) return;
+      e.preventDefault();
+      const dir = btn.dataset.nav === 'next' ? +1 : -1;
+      go(idx + dir, dir);
+    });
+
+    // Swipe nav (pointer + touch)
+    let sx=null, sy=null, t0=0;
+    root.addEventListener('pointerdown',(e)=>{ sx=e.clientX; sy=e.clientY; t0=performance.now(); });
     root.addEventListener('pointerup',(e)=>{
       if (sx==null) return;
-      const dx=e.clientX-sx, dy=e.clientY-sy, dt=performance.now()-ts; sx=sy=null;
-      if (Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy) && dt<800) show(idx+(dx<0?+1:-1), dx<0?+1:-1);
-    });
+      const dx=e.clientX-sx, dy=e.clientY-sy, dt=performance.now()-t0; sx=sy=null;
+      if (Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy) && dt<800) go(idx+(dx<0?+1:-1), dx<0?+1:-1);
+    }, { passive:true });
 
     // Hash routing
-    window.addEventListener('hashchange', ()=>{ const h=parseHash(); if (h && h!==idx) show(h, h>idx?+1:-1); });
+    window.addEventListener('hashchange', ()=>{ const h=fromHash(); if (h && h!==idx) go(h, h>idx?+1:-1); });
 
-    // HERO: parallax / spotlight / counters / tilt
-    const hero = slides[0];
-    function initHeroOnce(){
+    // HERO: parallax / spotlight / counters / word switcher
+    function initHero(){
+      const hero = slides[0];
       // Spotlight follows pointer
-      const spot = qs('.hero-spotlight', hero);
-      if (!prefersReduced && spot){
+      const spot = $('.hero-spotlight', hero);
+      if (spot && window.matchMedia?.('(pointer:fine)').matches && !prefersReduced){
         document.addEventListener('pointermove',(e)=>{
           const x = (e.clientX / innerWidth) * 100;
           const y = (e.clientY / innerHeight) * 100;
           spot.style.setProperty('--mx', `${x}%`);
           spot.style.setProperty('--my', `${y}%`);
-        });
+        }, { passive:true });
       }
       // Word switcher
-      const words = qsa('.hero-switch b', hero);
+      const words = $$('.hero-switch b', hero);
       if (words.length){
         let w = 0; setInterval(()=>{ words[w].classList.remove('is-on'); w=(w+1)%words.length; words[w].classList.add('is-on'); }, 1800);
       }
-      // Counters: start at target immediately (no zeros), then subtle tick-up
-      qsa('.js-count', hero).forEach(el=>{
+      // Parallax headline
+      const pEls = $$('[data-parallax]', hero);
+      if (pEls.length && window.matchMedia?.('(pointer:fine)').matches && !prefersReduced){
+        document.addEventListener('mousemove',(e)=>{
+          const {innerWidth:w, innerHeight:h}=window, dx=(e.clientX-w/2)/(w/2), dy=(e.clientY-h/2)/(h/2);
+          pEls.forEach(el=>{ const f=parseFloat(el.getAttribute('data-parallax')||'0.3'); el.style.transform=`translate(${dx*10*f}px, ${dy*10*f}px)`; });
+        }, { passive:true });
+      }
+      // Counters: show target immediately, then micro tick-up
+      $$('.js-count', hero).forEach(el=>{
         const target = parseFloat(el.dataset.to || '0');
         const prefix = el.dataset.prefix || '';
-        // render immediately
-        el.textContent = `${prefix}${Math.round(target)}`;
-        // micro tick-up (+3%) for “alive” feel
-        if (!prefersReduced && target > 0){
-          const end = Math.round(target*1.03);
-          const startVal = target;
+        el.textContent = `${prefix}${Math.round(target)}`; // immediate (no zeros)
+        if (target > 0 && !prefersReduced){
+          const end = Math.round(target*1.03), startVal = target;
           const start = performance.now(), dur = 700;
           const step = (t)=>{
             const p = Math.min(1, (t - start)/dur);
@@ -194,50 +234,449 @@
           requestAnimationFrame(step);
         }
       });
-      // Parallax headline
-      const pEls = qsa('[data-parallax]', hero);
-      if (!prefersReduced && window.matchMedia?.('(pointer:fine)').matches && pEls.length){
-        document.addEventListener('mousemove',(e)=>{
-          const {innerWidth:w, innerHeight:h}=window, dx=(e.clientX-w/2)/(w/2), dy=(e.clientY-h/2)/(h/2);
-          pEls.forEach(el=>{ const f=parseFloat(el.getAttribute('data-parallax')||'0.3'); el.style.transform=`translate(${dx*10*f}px, ${dy*10*f}px)`; });
-        });
-      }
-      // 3D tilt on ad cards (base transform preserved)
-      const stack = qsa('.ad-card', hero);
-      if (!prefersReduced && window.matchMedia?.('(pointer:fine)').matches && stack.length){
-        stack.forEach(c => c.dataset.base = getComputedStyle(c).transform || 'none');
-        document.addEventListener('mousemove',(e)=>{
-          stack.forEach(card=>{
-            const r = card.getBoundingClientRect();
-            const cx = r.left + r.width/2, cy = r.top + r.height/2;
-            const dx = (e.clientX - cx)/r.width, dy = (e.clientY - cy)/r.height;
-            const rx = dy * -8, ry = dx * 12;
-            card.style.transform = `${card.dataset.base} rotateX(${rx}deg) rotateY(${ry}deg)`;
-          });
-        });
-      }
     }
 
-    // ROI calculator
-    const spendEl=qs('.js-spend',deck), cpcEl=qs('.js-cpc',deck), cvrEl=qs('.js-cvr',deck), closeEl=qs('.js-close',deck), aovEl=qs('.js-aov',deck);
-    const leadsOut=qs('.js-leads',deck), salesOut=qs('.js-sales',deck), cplOut=qs('.js-cpl',deck), cpaOut=qs('.js-cpa',deck), revOut=qs('.js-rev',deck), roasOut=qs('.js-roas',deck), brkOut=qs('.js-breakeven',deck), gfill=qs('.js-gfill',deck);
+    /* =========================
+       ROI CALCULATOR (Slide 7)
+       ========================= */
+    const spendEl=$('.js-spend',deck), cpcEl=$('.js-cpc',deck), cvrEl=$('.js-cvr',deck), closeEl=$('.js-close',deck), aovEl=$('.js-aov',deck);
+    const leadsOut=$('.js-leads',deck), salesOut=$('.js-sales',deck), cplOut=$('.js-cpl',deck), cpaOut=$('.js-cpa',deck), revOut=$('.js-rev',deck), roasOut=$('.js-roas',deck), brkOut=$('.js-breakeven',deck), gfill=$('.js-gfill',deck);
     function fmt$(n){ return Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
     function fmtx(n){ const v=Math.round(n*100)/100; return `${v.toFixed(2)}x`; }
     function fmti(n){ return Intl.NumberFormat(undefined,{maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
     function calc(){
-      const spend=+spendEl.value||0, cpc=Math.max(+cpcEl.value||0.01,0.01);
-      const cvr=Math.max(Math.min(+cvrEl.value||0,100),0)/100, close=Math.max(Math.min(+closeEl.value||0,100),0)/100, aov=+aovEl.value||0;
+      const spend=+spendEl?.value||0, cpc=Math.max(+cpcEl?.value||0.01,0.01);
+      const cvr=Math.max(Math.min(+cvrEl?.value||0,100),0)/100, close=Math.max(Math.min(+closeEl?.value||0,100),0)/100, aov=+aovEl?.value||0;
       const clicks=spend/cpc, leads=clicks*cvr, sales=leads*close;
       const cpl=leads>0?spend/leads:Infinity, cpa=sales>0?spend/sales:Infinity, revenue=sales*aov, roas=spend>0?revenue/spend:0;
       if (leadsOut) leadsOut.textContent=Number.isFinite(leads)?fmti(leads):'—';
       if (salesOut) salesOut.textContent=Number.isFinite(sales)?fmti(sales):'—';
-      revOut.textContent=fmt$(revenue); roasOut.textContent=fmtx(roas);
-      cplOut.textContent=Number.isFinite(cpl)?fmt$(cpl):'—'; cpaOut.textContent=Number.isFinite(cpa)?fmt$(cpa):'—';
+      if (revOut) revOut.textContent=fmt$(revenue);
+      if (roasOut) roasOut.textContent=fmtx(roas);
+      if (cplOut) cplOut.textContent=Number.isFinite(cpl)?fmt$(cpl):'—';
+      if (cpaOut) cpaOut.textContent=Number.isFinite(cpa)?fmt$(cpa):'—';
       const pct=Math.max(0, Math.min(100, (Math.min(roas,3)/3)*100)); if (gfill) gfill.style.width = `${pct}%`;
-      const good=roas>=1; brkOut.textContent=good?'Above breakeven':'Below breakeven'; brkOut.style.background=good?'linear-gradient(135deg, var(--cl-accent), var(--cl-accent-2))':'rgba(0,0,0,.45)'; brkOut.style.color=good?'#001018':'';
+      const good=roas>=1; if (brkOut){ brkOut.textContent=good?'Above breakeven':'Below breakeven'; brkOut.style.background=good?'linear-gradient(135deg, var(--cl-accent), var(--cl-accent-2))':'rgba(0,0,0,.45)'; brkOut.style.color=good?'#001018':''; }
     }
     if (spendEl) ['input','change'].forEach(evt=>[spendEl,cpcEl,cvrEl,closeEl,aovEl].forEach(el=>el.addEventListener(evt,calc)));
     calc();
 
+    /* =========================
+       SLIDE 4: AD ENGINE TOGGLES
+       ========================= */
+    function initEngine(slide){
+      if (slide.dataset.init) return; slide.dataset.init = '1';
+      const splitEl = $('.js-split', slide);
+      const tgWrap  = $('.engine-toggles', slide);
+      const s1List  = $('.s1 ul', slide);
+      const s2List  = $('.s2 ul', slide);
+      const s3List  = $('.s3 ul', slide);
+
+      const themes = {
+        balanced: {
+          split: 'Search 40% • FB/IG 35% • Retarget 20% • LSA 5%',
+          s1: ['Drone flyovers & before/after','Neighborhood geo‑targeting','Storm damage / financing hooks'],
+          s2: ['High‑intent keywords only','Deep negatives & extensions','LSA + branded defense'],
+          s3: ['Recent installs & crew intros','Map/review proof & deadlines','Everywhere they scroll']
+        },
+        storm: {
+          split: 'Search 45% • FB/IG 30% • Retarget 20% • LSA 5%',
+          s1: ['Before/after hail & wind damage','Zip‑code storm clusters','Emergency tarp / quick response'],
+          s2: ['“roof replacement” + “storm damage” sets','Exclude DIY/“jobs”/training','LSA urgency ad copy'],
+          s3: ['Damaged shingles proof reels','Insurance help explainer','Deadline: filing window']
+        },
+        metal: {
+          split: 'FB/IG 40% • Search 35% • Retarget 20% • LSA 5%',
+          s1: ['Cinematic metal installs','Benefits: longevity, energy, look','Financing spotlight'],
+          s2: ['“metal roof” + brand terms','Exclude repair kits & panels','Branded defense on your name'],
+          s3: ['Home tours with metal roofs','Noise & lightning FAQs','Book design consult']
+        },
+        finance: {
+          split: 'Search 38% • FB/IG 32% • Retarget 25% • LSA 5%',
+          s1: ['$0 down / low APR hooks','Before/after + payment overlay','Neighborhood geo‑targeting'],
+          s2: ['“roof financing” variants','Exclude low‑intent queries','Extensions: sitelinks & callouts'],
+          s3: ['Calculator demo videos','Approval timeline explainer','Retarget until they apply']
+        },
+        insurance: {
+          split: 'Search 40% • Retarget 25% • FB/IG 30% • LSA 5%',
+          s1: ['“We handle the claim” creative','Estimator walk‑throughs','Local storm credibility'],
+          s2: ['Insurance/adjuster terms (exact)','Negatives to cut DIY & info','Competitor conquest'],
+          s3: ['Claim checklist carousel','Reviews about claim help','CTA: inspection + guidance']
+        }
+      };
+
+      function setTheme(key='balanced'){
+        const t = themes[key] || themes.balanced;
+        if (splitEl) splitEl.textContent = t.split;
+        if (s1List) s1List.innerHTML = t.s1.map(li=>`<li>${li}</li>`).join('');
+        if (s2List) s2List.innerHTML = t.s2.map(li=>`<li>${li}</li>`).join('');
+        if (s3List) s3List.innerHTML = t.s3.map(li=>`<li>${li}</li>`).join('');
+      }
+      setTheme('balanced');
+
+      if (tgWrap){
+        tgWrap.addEventListener('click', (e)=>{
+          const btn = e.target.closest('.tg'); if (!btn) return;
+          tgWrap.querySelectorAll('.tg').forEach(b=>b.classList.remove('is-on'));
+          btn.classList.add('is-on');
+          setTheme(btn.dataset.theme);
+        });
+      }
+    }
+
+    /* =========================
+       SLIDE 5: INTAKE DEMO
+       ========================= */
+    function initIntake(slide){
+      if (slide.dataset.init) return; slide.dataset.init = '1';
+
+      // Gauge setup
+      const fg = $('.score-ring .fg', slide);
+      const num = $('.score-num', slide);
+      const gradePill = $('.score-tags .grade', slide);
+      const CIRC = 2 * Math.PI * 62; // r=62 matches SVG
+      if (fg){
+        fg.style.strokeDasharray = `${CIRC}`;
+        fg.style.strokeDashoffset = `${CIRC * (1-0.92)}`; // initial ~92
+      }
+
+      function setScore(score){
+        const s = Math.max(0, Math.min(100, score));
+        if (fg) fg.style.strokeDashoffset = `${CIRC * (1 - s/100)}`;
+        if (num) num.textContent = String(Math.round(s));
+        const label = s>=85 ? 'A — Inspection‑ready' : s>=70 ? 'B — Strong' : s>=55 ? 'C — Nurture' : 'D — Disqualify';
+        if (gradePill) gradePill.textContent = label;
+      }
+
+      const toggles = $$('.intake-toggle input', slide);
+      function recalc(){
+        let base = 42;
+        toggles.forEach(el => { if (el.checked) base += (+el.dataset.weight||0); });
+        setScore(Math.min(base, 99));
+      }
+      toggles.forEach(el => el.addEventListener('change', recalc));
+      recalc();
+
+      // Notifications pulse sequence
+      const steps = $$('.notify-step', slide);
+      function pulse(){
+        steps.forEach(s=> s.classList.remove('is-on'));
+        steps.forEach((s,i)=> setTimeout(()=> { if (!slide.classList.contains('is-active')) return; s.classList.add('is-on'); }, i*300));
+      }
+
+      // Lead chip animation across lane
+      const lane = $('.flow-lane .lane', slide);
+      function dropChip(){
+        if (!lane || !slide.classList.contains('is-active')) return;
+        const chip = document.createElement('div');
+        chip.className = 'lead-chip';
+        chip.textContent = '✓';
+        lane.appendChild(chip);
+        requestAnimationFrame(()=> chip.classList.add('go'));
+        chip.addEventListener('transitionend', ()=> chip.remove(), { once:true });
+      }
+
+      // Periodic demo loop while active
+      const loop = setInterval(()=> {
+        if (!slide.classList.contains('is-active')) return;
+        dropChip(); pulse();
+      }, 2600);
+
+      // Clean on hashchange
+      window.addEventListener('hashchange', ()=> {
+        if (!slide.classList.contains('is-active')) clearInterval(loop);
+      });
+    }
+
+    /* =========================
+       SLIDE 6: TRACKING & PROOF (moved outside IIFE earlier; kept here)
+       ========================= */
+    // Provided below as global function: initProof
+
+    /* =========================
+       SLIDE 8: TEAM (light init)
+       ========================= */
+    function initTeam(slide){
+      if (slide.dataset.init) return; slide.dataset.init = '1';
+      // Optional rotating line in "The Result" punch for a bit of life
+      const punch = slide.querySelector('.team-outcome .punch strong');
+      const lines = ['These are the people.', 'Let’s book the inspection.', 'They look like the #1 choice.'];
+      if (punch && !prefersReduced){
+        let i=0;
+        setInterval(()=>{
+          i=(i+1)%lines.length;
+          if (punch.animate){
+            const out = punch.animate([{opacity:1},{opacity:0}],{duration:140, easing:'ease-out'});
+            out.onfinish = ()=>{ punch.textContent = lines[i]; punch.animate([{opacity:0},{opacity:1}],{duration:160, easing:'ease-in'}); };
+          } else {
+            punch.textContent = lines[i];
+          }
+        }, 1600);
+      }
+    }
   });
 })();
+
+/* =========================
+   SLIDE 6: TRACKING & PROOF (standalone init)
+   ========================= */
+function initProof(slide){
+  if (slide.dataset.init) return; slide.dataset.init = '1';
+  const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+
+  // KPI counters — light tick so numbers feel alive (no zero flicker)
+  const kpis = {
+    leads:  { el: slide.querySelector('.js-mleads'),    val: 38, max: 62 },
+    appts:  { el: slide.querySelector('.js-mappts'),    val: 24, max: 41 },
+    installs:{ el: slide.querySelector('.js-minstalls'), val: 7,  max: 12 },
+    rev:    { el: slide.querySelector('.js-mrev'),      val: 231000, max: 330000 }
+  };
+  const fmtI = n => Intl.NumberFormat(undefined,{maximumFractionDigits:0}).format(n);
+  const fmt$ = n => Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
+
+  function bump(){
+    // small random nudges within caps
+    kpis.leads.val = Math.min(kpis.leads.max,  kpis.leads.val + (Math.random()<.4?1:0));
+    kpis.appts.val = Math.min(kpis.appts.max,  kpis.appts.val + (Math.random()<.35?1:0));
+    // installs less frequent
+    if (Math.random()<.18) kpis.installs.val = Math.min(kpis.installs.max, kpis.installs.val + 1);
+    kpis.rev.val   = Math.min(kpis.rev.max,    kpis.installs.val * 33000);
+    if (kpis.leads.el)   kpis.leads.el.textContent   = fmtI(kpis.leads.val);
+    if (kpis.appts.el)   kpis.appts.el.textContent   = fmtI(kpis.appts.val);
+    if (kpis.installs.el)kpis.installs.el.textContent= fmtI(kpis.installs.val);
+    if (kpis.rev.el)     kpis.rev.el.textContent     = fmt$(kpis.rev.val);
+  }
+
+  // Praise stream — presence signals you can feel (not testimonials)
+  const feed = slide.querySelector('.praise-feed');
+  const signals = [
+    { icon:'⭐', text:'New 5★ Google review posted', meta:'GBP' },
+    { icon:'📸', text:'New photo added to Business Profile', meta:'+visibility' },
+    { icon:'📍', text:'Ranked in Local Pack for “roofer near me”', meta:'Maps' },
+    { icon:'💬', text:'Q&A answered on your profile', meta:'Trust' },
+    { icon:'🔎', text:'Branded searches up week over week', meta:'Search' },
+    { icon:'🧭', text:'Directions requests from Maps increased', meta:'Maps' }
+  ];
+  function pushSignal(){
+    if (!feed) return;
+    const s = signals[Math.floor(Math.random()*signals.length)];
+    const li = document.createElement('li');
+    li.className = 'praise-item';
+    li.innerHTML = `<span class="star" aria-hidden="true">${s.icon}</span><span>${s.text}</span><small class="meta">${s.meta}</small>`;
+    feed.prepend(li);
+    // trim
+    const max = 6; while (feed.children.length > max) feed.lastElementChild?.remove();
+  }
+
+  // Lead stream — chips glide across the track (instant routing vibe)
+  const track = slide.querySelector('.lead-track');
+  const postal = ['32708','53211','80210','29407','48009','97206','44124','38117','34953','30341'];
+  const roof   = ['Metal','Architectural','Tile','Flat'];
+  const asap   = ['ASAP','This Week','Soon','2–3 Days'];
+  function pushLead(){
+    if (!track) return;
+    const chip = document.createElement('div');
+    chip.className = 'lead-chip2';
+    const z = postal[Math.floor(Math.random()*postal.length)];
+    const r = roof[Math.floor(Math.random()*roof.length)];
+    const t = asap[Math.floor(Math.random()*asap.length)];
+    chip.textContent = `New Inspection • ${z} • ${r} • ${t}`;
+    track.appendChild(chip);
+    requestAnimationFrame(()=> chip.classList.add('go'));
+    chip.addEventListener('transitionend', ()=> chip.remove(), { once:true });
+  }
+
+  // Kick it off while slide is active
+  if (!prefersReduced){
+    const loop1 = setInterval(()=> { if (slide.classList.contains('is-active')) bump(); }, 1800);
+    const loop2 = setInterval(()=> { if (slide.classList.contains('is-active')) pushSignal(); }, 1600);
+    const loop3 = setInterval(()=> { if (slide.classList.contains('is-active')) pushLead(); }, 2100);
+    window.addEventListener('hashchange', ()=> {
+      if (!slide.classList.contains('is-active')) { clearInterval(loop1); clearInterval(loop2); clearInterval(loop3); }
+    });
+  } else {
+    // Still show a couple items with reduced motion
+    pushSignal(); pushSignal();
+  }
+}
+
+
+/* =========================
+   SLIDE 9: OBJECTIONS — INTERACTIVE
+   ========================= */
+function initObjections(slide){
+  if (slide.dataset.init) return; slide.dataset.init = '1';
+  const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+
+  // Data: objection → claim → our answer → receipts
+  const items = [
+    {
+      key:'have-agency',
+      label:'We already have someone',
+      claim:'We don’t just “run ads.” We make you look like the #1 roofer and follow prospects everywhere.',
+      myth:['Our current guy handles Google/FB','We’re set for now'],
+      answer:[
+        'Omnipresence system: Search + LSA + Maps + FB/IG + Display working together (no YouTube).',
+        'Pro content shoot → cinematic, local proof — not templated creatives.',
+        'Exclusive territory: we won’t also run your competitor.'
+      ],
+      proof:['CPL as low as $33 on Meta (metal roofing).','7‑day launch.','Qualified leads guaranteed.']
+    },
+    {
+      key:'tried-ads',
+      label:'Tried ads — didn’t work',
+      claim:'It fails when it’s just ads. It works when intent, proof and follow‑up are stitched together.',
+      myth:['Clicks, no installs','Agency vanished after launch'],
+      answer:[
+        'Capture intent (Search/LSA) + win the compare (Maps/Reviews) + retarget until they book.',
+        'Pre‑screening + lead scoring kill junk.',
+        'Routing + speed‑to‑lead under 5 minutes.']
+      ,
+      proof:['Real‑time proof signals (reviews, directions, branded search).','Monthly ROI strategy call.','No shared leads — ever.']
+    },
+    {
+      key:'price',
+      label:'Too expensive',
+      claim:'One average install often covers the entire month. After that, it’s house money.',
+      myth:['We need the “cheapest” option'],
+      answer:[
+        'Avg job value ≈ $33k; you’re buying installs, not impressions.',
+        'We bring the team you won’t build in‑house (shooters, editors, ad managers).',
+        'Scale up/down by crew capacity.'],
+      proof:['Transparent ROI math on Slide 7.','Exclusive territory — limited to 3 per region.','Qualified leads guaranteed.']
+    },
+    {
+      key:'quality',
+      label:'Lead quality',
+      claim:'We screen for territory fit, roof type, age/damage, insurance, and timeline — before it hits you.',
+      myth:['We’ll get tire‑kickers','Shared lists'],
+      answer:[
+        'Pre‑screen form + weights = A/B/C/D scores.',
+        'SpamShield™ blocks duplicates and junk.',
+        'Instant routing to the right person.'],
+      proof:['Speed‑to‑lead < 5 minutes.','You own the pipeline — no shared leads.','Local proof baked into creatives.']
+    },
+    {
+      key:'capacity',
+      label:'No time / capacity',
+      claim:'You focus on installs. We handle creative, ads, tracking, and optimization.',
+      myth:['We’re swamped','No one to “run this” internally'],
+      answer:[
+        'Three things from you: pick territory, confirm budget, answer leads fast.',
+        'We handle the content shoot, build, launch, and monthly strategy.',
+        'Throttle by crew capacity — pause geos or shift spend.'],
+      proof:['7‑day go‑live.','Appointments land on your calendar.','Monthly strategy call.']
+    },
+    {
+      key:'proof',
+      label:'Need proof',
+      claim:'You’ll feel lift fast — and you’ll see it: leads, appointments, installs, revenue.',
+      myth:['We’ve been burned by reports'],
+      answer:[
+        'We show what to scale — not box‑checking dashboards.',
+        'Presence signals: new reviews, photos, Local Pack ranks.',
+        'Scenario‑based ROI calculator (live on Slide 7).'],
+      proof:['Qualified leads (30d), appointments, installs tick up.','Presence signals feed on Slide 6.','Strategy call each month.']
+    },
+    {
+      key:'organic',
+      label:'We rank already',
+      claim:'Great — we capture demand you don’t see and defend your brand everywhere they compare.',
+      myth:['SEO is enough','Word‑of‑mouth only'],
+      answer:[
+        'Own “roofer near me” with Search/LSA and branded defense.',
+        'Reviews & Maps flywheel makes you the obvious pick.',
+        'Retargeting closes the loop while they think.'],
+      proof:['Branded searches up.','Directions & calls increase.','Reviews velocity climbs.']
+    },
+    {
+      key:'risk',
+      label:'What if it doesn’t work?',
+      claim:'We de‑risk with exclusivity and a qualified‑leads guarantee.',
+      myth:['We can’t afford a miss'],
+      answer:[
+        'Only 3 roofers per region — when it’s locked, it’s gone.',
+        'Qualified leads guaranteed — or we keep working free.',
+        'We shift strategy by theme (storm, metal, financing, insurance).'],
+      proof:['Exclusivity = no internal competition.','Theme toggles (Slide 4) to chase what’s working.','7‑day launch, then optimize.']
+    }
+  ];
+
+  const chips = slide.querySelector('.obj-chips');
+  const stage = slide.querySelector('.obj-stage');
+  const bar   = slide.querySelector('.obj-progress__bar');
+  const count = slide.querySelector('.obj-progress__count');
+  const prev  = slide.querySelector('.obj-prev');
+  const next  = slide.querySelector('.obj-next');
+
+  let i = 0;
+
+  function build(o){
+    const li = (arr) => arr.map(t=>`<li>${t}</li>`).join('');
+    const pills = (arr) => arr.map(t=>`<span class="pill">${t}</span>`).join('');
+    return `
+      <div class="obj-card" data-animate="pop">
+        <div class="obj-claim"><span class="obj-tag">The Case</span><h3>${o.claim}</h3></div>
+        <div class="obj-col bad">
+          <h4>The Objection</h4>
+          <ul>${li(o.myth)}</ul>
+        </div>
+        <div class="obj-col good">
+          <h4>Why We Win</h4>
+          <ul>${li(o.answer)}</ul>
+        </div>
+        <div class="obj-col proof">
+          <h4>Receipts</h4>
+          <div>${pills(o.proof)}</div>
+        </div>
+      </div>`;
+  }
+
+  function setActive(n){
+    i = (n + items.length) % items.length;
+    // Chips
+    chips.querySelectorAll('.obj-chip').forEach((b,idx)=>{
+      const on = idx === i;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.setAttribute('tabindex', on ? '0' : '-1');
+    });
+    // Progress
+    if (count) count.textContent = `${i+1}/${items.length}`;
+    if (bar) bar.style.width = `${(i+1)/items.length*100}%`;
+    // Stage
+    if (stage){
+      stage.innerHTML = build(items[i]);
+      // tiny entrance
+      if (!prefersReduced){
+        const card = stage.querySelector('.obj-card');
+        if (card?.animate){
+          card.animate(
+            [{opacity:0, transform:'translateY(10px) scale(.98)'},{opacity:1, transform:'translateY(0) scale(1)'}],
+            {duration:260, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'}
+          );
+        }
+      }
+    }
+  }
+
+  // Build chips
+  items.forEach((o, idx)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'obj-chip' + (idx===0?' is-on':'');
+    btn.setAttribute('role','tab');
+    btn.setAttribute('aria-selected', idx===0 ? 'true' : 'false');
+    btn.textContent = o.label;
+    btn.addEventListener('click', ()=> setActive(idx));
+    chips?.appendChild(btn);
+  });
+
+  // Controls
+  next?.addEventListener('click', ()=> setActive(i+1));
+  prev?.addEventListener('click', ()=> setActive(i-1));
+
+  // Init
+  setActive(0);
+}
+
