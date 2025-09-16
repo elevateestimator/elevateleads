@@ -428,3 +428,37 @@ img, svg, video {
     margin-bottom: 8px;
   }
 }
+
+/* === ROI calc & forms === */
+.calc-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.calc-card{
+  background: var(--c-card);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.form-row{ display: grid; gap: 6px; margin-bottom: 10px; }
+label{ font-weight: 800; opacity: 0.9; }
+input[type="number"]{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--c-white);
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.micro{ font-size: 0.85rem; opacity: 0.85; }
+.results .stats{ margin-top: 2px; }
+.big-num{
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem); font-weight: 800;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-primary));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin-top: 10px;
+}
+@media (max-width: 1024px){ .calc-grid{ grid-template-columns: 1fr; } }

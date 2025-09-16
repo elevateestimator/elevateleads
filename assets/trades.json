@@ -1,0 +1,262 @@
+{
+  "general": {
+    "label": "Trades",
+    "label_lc": "trades",
+    "coreService": "High‑Value Jobs",
+    "qualifiedDefinition": "Homeowner in your service area seeking your services with valid contact info; ready for scheduling.",
+    "avgTicket": 5000,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Owner on camera, crew at work",
+        "Before/after transformations",
+        "Neighborhood geo-targeting"
+      ],
+      "consideration": [
+        "Free inspection / assessment",
+        "Permit‑ready turnaround",
+        "Financing & scheduling options"
+      ]
+    }
+  },
+  "roofing": {
+    "label": "Roofing",
+    "label_lc": "roofing",
+    "coreService": "Roof Installs",
+    "qualifiedDefinition": "Homeowner seeking roof replacement or major repair with valid contact info; in service area.",
+    "avgTicket": 33000,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Drone yard/roof visuals, crew at work",
+        "Before/after transformations",
+        "Neighborhood geo-targeting"
+      ],
+      "consideration": [
+        "Free roof inspection",
+        "Storm damage assessment",
+        "Financing options"
+      ]
+    }
+  },
+  "hvac": {
+    "label": "HVAC",
+    "label_lc": "hvac",
+    "coreService": "System Installs",
+    "qualifiedDefinition": "Homeowner requesting repair or full HVAC replacement with valid contact info; ready to schedule.",
+    "avgTicket": 9500,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Tune‑ups before the heat wave",
+        "Owner on camera: reliability & comfort",
+        "Before/after installs"
+      ],
+      "consideration": [
+        "$0 down system replacement",
+        "Same‑day service windows",
+        "Maintenance plans"
+      ]
+    }
+  },
+  "plumbing": {
+    "label": "Plumbing",
+    "label_lc": "plumbing",
+    "coreService": "Repipes & Water Heaters",
+    "qualifiedDefinition": "Homeowner needing repair/replacement (e.g., water heater, repipe) with valid contact info; in area.",
+    "avgTicket": 3500,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Pipe burst prevention tips",
+        "Before/after repipes",
+        "Neighborhood geo‑targeting"
+      ],
+      "consideration": [
+        "Water heater swap this week",
+        "Free estimate",
+        "Financing available"
+      ]
+    }
+  },
+  "electrical": {
+    "label": "Electrical",
+    "label_lc": "electrical",
+    "coreService": "Panel Upgrades & EV Chargers",
+    "qualifiedDefinition": "Homeowner requesting panel upgrade or EV charger with valid contact info; in service area.",
+    "avgTicket": 4800,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Panel upgrade education",
+        "EV charger benefits",
+        "Before/after panel swaps"
+      ],
+      "consideration": [
+        "Free panel inspection",
+        "Permit‑ready turnaround",
+        "Rebate & financing info"
+      ]
+    }
+  },
+  "windows": {
+    "label": "Windows",
+    "label_lc": "windows",
+    "coreService": "Full‑Home Window Replacements",
+    "qualifiedDefinition": "Homeowner considering multi‑window replacement; valid contact info; scheduling ready.",
+    "avgTicket": 12000,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Energy savings & curb appeal",
+        "Before/after replacements",
+        "Neighborhood targeting"
+      ],
+      "consideration": [
+        "Free measurement",
+        "Manufacturer promos",
+        "Install financing"
+      ]
+    }
+  },
+  "siding": {
+    "label": "Siding",
+    "label_lc": "siding",
+    "coreService": "Exterior Siding Installs",
+    "qualifiedDefinition": "Homeowner planning siding replacement; valid contact, in area; ready to schedule.",
+    "avgTicket": 13000,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Curb appeal transformations",
+        "Material education (vinyl, fiber-cement)",
+        "Neighborhood showcases"
+      ],
+      "consideration": [
+        "Free exterior assessment",
+        "Color & material consult",
+        "Financing offers"
+      ]
+    }
+  },
+  "solar": {
+    "label": "Solar",
+    "label_lc": "solar",
+    "coreService": "Solar System Installs",
+    "qualifiedDefinition": "Homeowner evaluating solar with utility bill; valid contact info; roof suitability.",
+    "avgTicket": 18000,
+    "goliveDays": 10,
+    "bullets": {
+      "awareness": [
+        "Bill reduction narratives",
+        "Drone shots of installs",
+        "Neighborhood targeting"
+      ],
+      "consideration": [
+        "Bill analysis",
+        "Tax credit education",
+        "Financing options"
+      ]
+    }
+  },
+  "painting": {
+    "label": "Painting",
+    "label_lc": "painting",
+    "coreService": "Exterior Repaints",
+    "qualifiedDefinition": "Homeowner planning interior/exterior repaint; valid contact; ready to schedule estimate.",
+    "avgTicket": 4500,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Before/after curb‑appeal",
+        "Owner on camera: prep & quality",
+        "Neighborhood targeting"
+      ],
+      "consideration": [
+        "Free color consult",
+        "Seasonal promos",
+        "Flexible scheduling"
+      ]
+    }
+  },
+  "concrete": {
+    "label": "Concrete",
+    "label_lc": "concrete",
+    "coreService": "Driveways & Pads",
+    "qualifiedDefinition": "Homeowner planning new pour or replacement; valid contact info; ready to schedule.",
+    "avgTicket": 8000,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Before/after pours",
+        "Drainage/grade education",
+        "Neighborhood targeting"
+      ],
+      "consideration": [
+        "Free site visit",
+        "Rebar & base explained",
+        "Schedule windows"
+      ]
+    }
+  },
+  "fencing": {
+    "label": "Fencing",
+    "label_lc": "fencing",
+    "coreService": "Perimeter Fencing",
+    "qualifiedDefinition": "Homeowner planning fence install; valid contact info; ready to schedule.",
+    "avgTicket": 6000,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Privacy & safety benefits",
+        "Material options showcase",
+        "Neighborhood target"
+      ],
+      "consideration": [
+        "Free measurement",
+        "Permit guidance",
+        "Install scheduling"
+      ]
+    }
+  },
+  "landscaping": {
+    "label": "Landscaping",
+    "label_lc": "landscaping",
+    "coreService": "Design & Install",
+    "qualifiedDefinition": "Homeowner planning landscaping upgrades; valid contact; ready to schedule consult.",
+    "avgTicket": 7000,
+    "goliveDays": 7,
+    "bullets": {
+      "awareness": [
+        "Before/after transformations",
+        "Owner on camera: design POV",
+        "Neighborhood targeting"
+      ],
+      "consideration": [
+        "Free design consult",
+        "Seasonal promos",
+        "Phased budgeting"
+      ]
+    }
+  },
+  "remodeling": {
+    "label": "Remodeling",
+    "label_lc": "remodeling",
+    "coreService": "Kitchens & Baths",
+    "qualifiedDefinition": "Homeowner planning a remodel; valid contact info; budget and timeline discussed.",
+    "avgTicket": 25000,
+    "goliveDays": 10,
+    "bullets": {
+      "awareness": [
+        "Before/after tours",
+        "Owner on camera: process & trust",
+        "Neighborhood targeting"
+      ],
+      "consideration": [
+        "Free design walk‑through",
+        "Budget & financing clarity",
+        "Permit timeline guidance"
+      ]
+    }
+  }
+}

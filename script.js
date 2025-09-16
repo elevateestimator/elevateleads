@@ -17,7 +17,6 @@ document.addEventListener('click', (e) => {
   if (el) {
     e.preventDefault();
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Close mobile menu after click
     if (menu && menu.classList.contains('open')) {
       menu.classList.remove('open');
       toggle?.setAttribute('aria-expanded', 'false');
@@ -37,7 +36,7 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
-// Stat counters
+// Stat counters (used for ROI result tiles)
 function animateCount(el, target, duration = 1200) {
   const isCurrency = /[$]/.test(el.textContent) || el.parentElement?.classList.contains('currency');
   const start = 0;
@@ -66,4 +65,53 @@ document.querySelectorAll('.num[data-count]').forEach((el) => {
 });
 
 // Current year
-document.getElementById('year').textContent = new Date().getFullYear();
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+// ===== ROI Calculator =====
+const calcBtn = document.getElementById('calcBtn');
+const statLeads = document.getElementById('statLeads');
+const statJobs = document.getElementById('statJobs');
+const statRevenue = document.getElementById('statRevenue');
+const statGolive = document.getElementById('statGolive');
+
+function triggerCount(el, to) {
+  el.setAttribute('data-count', String(to));
+  animateCount(el, to);
+}
+
+function calcProjection() {
+  const v = (id, d=0) => {
+    const el = document.getElementById(id);
+    if (!el) return d;
+    const val = parseFloat(el.value || el.placeholder || d);
+    return isNaN(val) ? d : val;
+  };
+  const avgTicket = v('avgTicket', 5000);
+  const leads = Math.max(1, Math.round(v('leadsPerMonth', 20)));
+  const closeRate = Math.min(100, Math.max(1, v('closeRate', 30)));
+
+  const jobsWon = Math.round(leads * (closeRate / 100));
+  const revenue = Math.round(avgTicket * jobsWon);
+
+  triggerCount(statLeads, leads);
+  triggerCount(statJobs, jobsWon);
+  triggerCount(statRevenue, revenue);
+
+  // Keep the go-live tile animated; set to 7 by default
+  triggerCount(statGolive, 7);
+}
+
+if (calcBtn) calcBtn.addEventListener('click', calcProjection);
+
+// ===== Idle Crew Loss =====
+const idleBtn = document.getElementById('idleBtn');
+const idleBurn = document.getElementById('idleBurn');
+function calcIdle() {
+  const crewSize = Math.max(1, parseInt(document.getElementById('crewSize')?.value || '4', 10));
+  const hourlyCost = Math.max(1, parseFloat(document.getElementById('hourlyCost')?.value || '35'));
+  const idleHours = Math.max(0, parseFloat(document.getElementById('idleHours')?.value || '6'));
+  const loss = Math.round(crewSize * hourlyCost * idleHours);
+  if (idleBurn) idleBurn.textContent = `$${loss.toLocaleString()}`;
+}
+if (idleBtn) idleBtn.addEventListener('click', calcIdle);
