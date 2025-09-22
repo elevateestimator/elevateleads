@@ -451,42 +451,47 @@
 
             <p class="engine-note">Channels we run: <strong>Google Search/LSA</strong>, <strong>Facebook/Instagram</strong>, and <strong>Google Display/Discovery retargeting</strong>. <em>No YouTube.</em></p>
           </aside>
-<!-- PREMIUM Creatives Reel using Supabase public URLs -->
-          <div class="engine-reel premium" data-animate="stagger" aria-label="Unmatched creative examples — real ads we shoot & run">
-            <!-- HERO: Horizontal — spans full width under the Ad Engine -->
-            <figure class="cl-card video-proof video-hero is-horz">
-              <div class="video-frame">
-                <video muted autoplay loop playsinline preload="metadata" aria-label="Horizontal ad example">
-                  <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example2.mp4" type="video/mp4">
-                </video>
-                <figcaption class="vf-badge">Unmatched Creative — Horizontal</figcaption>
-              </div>
-            </figure>
+<!-- PREMIUM Creatives Reel (replaces any previous .engine-reel) -->
+<div class="engine-reel premium" data-animate="stagger" aria-label="Unmatched creative examples — real ads we shoot & run">
+  <!-- HERO: Horizontal — spans full width under the Ad Engine -->
+  <figure class="cl-card video-proof video-hero is-horz">
+    <div class="video-frame">
+      <video muted autoplay loop playsinline preload="metadata" aria-label="Horizontal ad example">
+        <!-- Supabase public URL first; local file as fallback -->
+        <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example2.mp4" type="video/mp4">
+        <source src="./example2.mp4" type="video/mp4">
+      </video>
+      <figcaption class="vf-badge">Unmatched Creative — Horizontal</figcaption>
+    </div>
+  </figure>
 
-            <!-- TOWERS: Two large verticals side‑by‑side -->
-            <div class="video-towers">
-              <figure class="cl-card video-proof is-vert">
-                <div class="video-frame">
-                  <video muted autoplay loop playsinline preload="metadata" aria-label="Vertical ad example 1">
-                    <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example1.MP4" type="video/mp4">
-                  </video>
-                  <figcaption class="vf-badge">Unmatched Creative — Vertical #1</figcaption>
-                </div>
-              </figure>
+  <!-- TOWERS: Two large verticals side‑by‑side -->
+  <div class="video-towers">
+    <figure class="cl-card video-proof is-vert">
+      <div class="video-frame">
+        <video muted autoplay loop playsinline preload="metadata" aria-label="Vertical ad example 1">
+          <!-- Case-sensitive; provide both just in case -->
+          <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example1.MP4" type="video/mp4">
+          <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example1.mp4" type="video/mp4">
+          <source src="./example1.MP4" type="video/mp4">
+        </video>
+        <figcaption class="vf-badge">Unmatched Creative — Vertical #1</figcaption>
+      </div>
+    </figure>
 
-              <figure class="cl-card video-proof is-vert">
-                <div class="video-frame">
-                  <video muted autoplay loop playsinline preload="metadata" aria-label="Vertical ad example 2">
-                    <!-- Browser will prefer MP4 if present; falls back to MOV for Safari -->
-                    <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example3.mp4" type="video/mp4">
-                    <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example3.mov" type="video/quicktime">
-                  </video>
-                  <figcaption class="vf-badge">Unmatched Creative — Vertical #2</figcaption>
-                </div>
-              </figure>
-            </div>
-  <small class="micro vf-note">Shot in‑market • Drone + mic’d crew • Edited for Search • FB/IG • Display.</small>
-</div>
+    <figure class="cl-card video-proof is-vert">
+      <div class="video-frame">
+        <video muted autoplay loop playsinline preload="metadata" aria-label="Vertical ad example 2">
+          <!-- Browsers prefer MP4; MOV kept as a fallback -->
+          <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example3.mp4" type="video/mp4">
+          <source src="https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media/example3.mov" type="video/quicktime">
+          <source src="./example3.mp4" type="video/mp4">
+          <source src="./example3.mov" type="video/quicktime">
+        </video>
+        <figcaption class="vf-badge">Unmatched Creative — Vertical #2</figcaption>
+      </div>
+    </figure>
+  </div>
 
   <small class="micro vf-note">Shot in‑market • Drone + mic’d crew • Edited for Search • FB/IG • Display.</small>
 </div>
