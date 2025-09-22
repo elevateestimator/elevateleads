@@ -322,15 +322,15 @@ if (slide.classList.contains('cl-slide--team')) initTeam(slide);
           setTheme(btn.dataset.theme);
         });
       }
-      // --- Supabase public video hydration (root-level files) ---
+           // --- Supabase public video hydration (root-level files) ---
       (function hydrateSupabaseVideos(){
         const base = window.SB_MEDIA_BASE;   // e.g., https://<ref>.supabase.co/storage/v1/object/public/media
         if (!base) return;
         slide.querySelectorAll('.engine-reel source[data-sb]').forEach(srcEl => {
-          const path = srcEl.getAttribute('data-sb').replace(/^\/+/, ''); // just "example1.mp4"
+          const path = srcEl.getAttribute('data-sb').replace(/^\/+/, '');
           srcEl.setAttribute('src', `${base}/${path}`);
         });
-        // Reload so the browser considers the new first <source>
+        // Reload so the browser selects the new first <source>
         slide.querySelectorAll('.engine-reel video').forEach(v => v.load());
       })();
 
