@@ -16,6 +16,11 @@
 
   <!-- Local, fully scoped deck logic -->
   <script defer src="./show.js"></script>
+
+<script>
+  window.SB_MEDIA_BASE = 'https://wbqwoaclkfgfjkonwtvn.supabase.co/storage/v1/object/public/media';
+</script>
+
 </head>
 <body>
   <main id="closing" role="main" tabindex="-1" aria-labelledby="cl-title">
@@ -451,9 +456,10 @@
   <!-- HERO: Horizontal — spans full width under the Ad Engine -->
   <figure class="cl-card video-proof video-hero is-horz">
     <div class="video-frame">
-      <video muted autoplay loop playsinline preload="metadata" aria-label="Horizontal ad example">
-        <source src="./example2.mp4" type="video/mp4">
-      </video>
+     <video muted autoplay loop playsinline preload="metadata" aria-label="Horizontal ad example">
+  <source data-sb="example2.mp4" type="video/mp4">
+  <!-- (Optional local fallback) <source src="./example2.mp4" type="video/mp4"> -->
+</video>
       <figcaption class="vf-badge">Unmatched Creative — Horizontal</figcaption>
     </div>
   </figure>
@@ -462,7 +468,10 @@
   <div class="video-towers">
     <figure class="cl-card video-proof is-vert">
       <div class="video-frame">
-        <video src="./example1.MP4" muted autoplay loop playsinline preload="metadata" aria-label="Vertical ad example 1"></video>
+        <video muted autoplay loop playsinline preload="metadata" aria-label="Vertical ad example 1">
+  <source data-sb="example1.mp4" type="video/mp4">
+  <!-- (Optional local fallback) <source src="./example1.MP4" type="video/mp4"> -->
+</video>
         <figcaption class="vf-badge">Unmatched Creative — Vertical #1</figcaption>
       </div>
     </figure>
@@ -470,10 +479,11 @@
     <figure class="cl-card video-proof is-vert">
       <div class="video-frame">
         <video muted autoplay loop playsinline preload="metadata" aria-label="Vertical ad example 2">
-          <!-- MOV fallback: if Chrome/Edge can’t play .mov, it will pick the MP4 if present -->
-          <source src="./example3.mp4" type="video/mp4">
-          <source src="./example3.mov">
-        </video>
+  <source data-sb="example3.mp4" type="video/mp4">
+  <!-- Optional extra fallback:
+  <source src="./example3.mp4" type="video/mp4">
+  <source src="./example3.mov"> -->
+</video>
         <figcaption class="vf-badge">Unmatched Creative — Vertical #2</figcaption>
       </div>
     </figure>
